@@ -1,9 +1,9 @@
 #pragma once
 #ifndef H_UTILITY_AUTOTESTS
 #define H_UTILITY_AUTOTESTS
-#include "../../../include/core/Factory.h"
-#include "../../../common/AMFFactory.h"
-#include "../../../include/core/Buffer.h"
+#include "../../include/core/Factory.h"
+#include "../../common/AMFFactory.h"
+#include "../../include/core/Buffer.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <fstream>
