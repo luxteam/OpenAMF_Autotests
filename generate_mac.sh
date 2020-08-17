@@ -6,6 +6,6 @@ rm -rf ./build
 mkdir build
 cd build
 
-cmake .. -DOpenCL_INCLUDE_DIR="../../../../../../CL_Headers" -DAMF_CORE_STATIC="true"
+cmake .. -DOpenCL_INCLUDE_DIR="../../../../../OpenCL-Headers" -DAMF_CORE_STATIC="true"
 
 cd ..
