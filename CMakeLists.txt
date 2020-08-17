@@ -91,7 +91,7 @@ add_subdirectory(../cmake ${AMF_NAME})
 add_executable(
     ${PROJECT_NAME}
     ${SOURCES}
-    ${HEADER_FILES}
+    ${HEADERS}
 )
 
 if(AMF_CORE_STATIC)
