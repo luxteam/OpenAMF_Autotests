@@ -20,14 +20,7 @@ ofstream logFile;
 
 int allocationHook(int allocType, void* userData, std::size_t size, int blockType, long requestNumber,
 	const unsigned char* filename, int lineNumber) {
-	if (allocType == _HOOK_ALLOC) {
-		memoryUsage.totalAllocated += size;
-		memoryUsage.totalPointersMade++;
-	}
-	else if (allocType == _HOOK_FREE){
-		memoryUsage.totalFreed += size;
-		memoryUsage.totalPointersMade--;
-	}
+	// TODO: Implement memory trackage
 	return 0;
 }
 

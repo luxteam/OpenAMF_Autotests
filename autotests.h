@@ -10,6 +10,7 @@
 #include <string>
 #include <chrono>
 #include <ctime>  
+#include <cmath>
 using namespace std;
 using namespace amf;
 
