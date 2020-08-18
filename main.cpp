@@ -70,7 +70,7 @@ TEST_F(Smoke, rect_test) {
 	EXPECT_EQ(rect.Height(), -1);
 }
 
-TEST_F(Smoke, get_compute) {
+TEST_F(Smoke, DISABLED_get_compute) {
 	AMFCompute* compute;
 	context1->GetCompute(AMF_MEMORY_OPENCL, &compute);
 	EXPECT_TRUE(compute);
@@ -84,11 +84,6 @@ TEST_F(Smoke, computeFactory_getDeviceAt) {
 	AMFComputeDevice* device;
 	EXPECT_EQ(oclComputeFactory->GetDeviceAt(0, &device), AMF_OK);
 	EXPECT_TRUE(device);
-}
-
-TEST_F(Smoke, computeFactory_getDeviceAt_negative) {
-	AMFComputeDevice* device;
-	EXPECT_ANY_THROW(oclComputeFactory->GetDeviceAt(1000, &device));
 }
 
 TEST_F(Smoke, deviceCompute_getNativePlatform) {
@@ -212,6 +207,7 @@ TEST_F(Smoke, compute_getKernel) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
+	device->CreateCompute(nullptr, &pCompute);
 	AMFPrograms* program;
 	factory->GetPrograms(&program);
 	AMF_KERNEL_ID kernel = 0;
@@ -254,7 +250,7 @@ TEST_F(Smoke, compute_finishQueue) {
 	EXPECT_NO_THROW(pCompute->FinishQueue());
 }
 
-TEST_F(Smoke, compute_fillPlane) {
+TEST_F(Smoke, DISABLED_compute_fillPlane) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -276,7 +272,7 @@ TEST_F(Smoke, DISABLED_compute_fillBuffer) {
 	EXPECT_TRUE(pCompute->GetMemoryType());
 }
 
-TEST_F(Smoke, compute_convertPlaneToBuffer) {
+TEST_F(Smoke, DISABLED_compute_convertPlaneToBuffer) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -298,7 +294,7 @@ TEST_F(Smoke, DISABLED_compute_copyBuffer) {
 	EXPECT_TRUE(pCompute->GetMemoryType());
 }
 
-TEST_F(Smoke, compute_copyPlane) {
+TEST_F(Smoke, DISABLED_compute_copyPlane) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -314,7 +310,7 @@ TEST_F(Smoke, compute_copyPlane) {
 	EXPECT_TRUE(plane2);
 }
 // make variations of this test
-TEST_F(Smoke, compute_copyBufferToHost_blocking) {
+TEST_F(Smoke, DISABLED_compute_copyBufferToHost_blocking) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -326,7 +322,7 @@ TEST_F(Smoke, compute_copyBufferToHost_blocking) {
 	EXPECT_TRUE(dest);
 }
 
-TEST_F(Smoke, compute_copyBufferFromHost) {
+TEST_F(Smoke, DISABLED_compute_copyBufferFromHost) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -340,7 +336,7 @@ TEST_F(Smoke, compute_copyBufferFromHost) {
 	EXPECT_TRUE(buffer2);
 }
 
-TEST_F(Smoke, compute_copyPlaneToHost) {
+TEST_F(Smoke, DISABLED_compute_copyPlaneToHost) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -356,7 +352,7 @@ TEST_F(Smoke, compute_copyPlaneToHost) {
 	EXPECT_TRUE(dest);
 }
 
-TEST_F(Smoke, compute_copyPlaneFromHost) {
+TEST_F(Smoke, DISABLED_compute_copyPlaneFromHost) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -374,7 +370,7 @@ TEST_F(Smoke, compute_copyPlaneFromHost) {
 	EXPECT_TRUE(plane2);
 }
 
-TEST_F(Smoke, compute_convertPlaneToPlane) {
+TEST_F(Smoke, DISABLED_compute_convertPlaneToPlane) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
