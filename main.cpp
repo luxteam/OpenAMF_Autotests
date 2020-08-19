@@ -45,8 +45,8 @@ struct Smoke : testing::Test {
 };
 
 TEST_F(Smoke, set_cache_folder) {
-	g_AMFFactory.GetFactory()->SetCacheFolder(L"cache");
-	EXPECT_STREQ(g_AMFFactory.GetFactory()->GetCacheFolder(), L"cache");
+	g_AMFFactory.GetFactory()->SetCacheFolder(L"./cache");
+	EXPECT_STREQ(g_AMFFactory.GetFactory()->GetCacheFolder(), L"./cache");
 }
 
 TEST_F(Smoke, release_null_check) {
@@ -132,13 +132,14 @@ TEST_F(Smoke, programs_registerKernelSource) {
 		" output[i] = input[i] * input[i]; \n" \
 		"}                     \n";
 	program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
-	AMFComputeKernelPtr pKernel;
+	EXPECT_TRUE(kernel);
+	/*AMFComputeKernelPtr pKernel;
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	EXPECT_EQ(pCompute->GetKernel(kernel, &pKernel), AMF_OK);
-	EXPECT_TRUE(pKernel);
+	EXPECT_TRUE(pKernel);*/
 }
 //TODO: Add kernel files
 TEST_F(Smoke, programs_registerKernelSourceFile) {
@@ -153,7 +154,7 @@ TEST_F(Smoke, programs_registerKernelSourceFile) {
 		" output[i] = input[i] * input[i]; \n" \
 		"}                     \n";
 	EXPECT_EQ(program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL), AMF_OK);
-	EXPECT_FALSE(kernel);
+	EXPECT_TRUE(kernel);
 }
 
 TEST_F(Smoke, programs_registerKernelBinary) {
