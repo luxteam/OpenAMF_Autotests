@@ -80,12 +80,6 @@ TEST_F(Smoke, computeFactory_getDeviceCount) {
 	EXPECT_EQ(oclComputeFactory->GetDeviceCount(), 1);
 }
 
-TEST_F(Smoke, computeFactory_getDeviceAt) {
-	AMFComputeDevice* device;
-	EXPECT_EQ(oclComputeFactory->GetDeviceAt(0, &device), AMF_OK);
-	EXPECT_TRUE(device);
-}
-
 TEST_F(Smoke, deviceCompute_getNativePlatform) {
 	AMFComputeDevice* device;
 	EXPECT_EQ(oclComputeFactory->GetDeviceAt(0, &device), AMF_OK);
@@ -104,75 +98,7 @@ TEST_F(Smoke, deviceCompute_getNativeContext) {
 	EXPECT_TRUE(device->GetNativeContext());
 }
 
-TEST_F(Smoke, deviceCompute_createCompute) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	EXPECT_EQ(device->CreateCompute(nullptr, &pCompute), AMF_OK);
-	EXPECT_TRUE(pCompute);
-}
-
-TEST_F(Smoke, deviceCompute_createComputeEx) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	EXPECT_EQ(device->CreateComputeEx(nullptr, &pCompute), AMF_OK);
-	EXPECT_TRUE(pCompute);
-}
-
-TEST_F(Smoke, programs_registerKernelSource) {
-	AMFPrograms* program;
-	factory->GetPrograms(&program);
-	AMF_KERNEL_ID kernel = 0;
-	const char* kernel_src = "\n" \
-		"__kernel void square2( __global float* input, __global float* output, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] * input[i]; \n" \
-		"}                     \n";
-	program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
-	EXPECT_TRUE(kernel);
-	/*AMFComputeKernelPtr pKernel;
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	EXPECT_EQ(pCompute->GetKernel(kernel, &pKernel), AMF_OK);
-	EXPECT_TRUE(pKernel);*/
-}
-//TODO: Add kernel files
-TEST_F(Smoke, programs_registerKernelSourceFile) {
-	AMFPrograms* program;
-	factory->GetPrograms(&program);
-	AMF_KERNEL_ID kernel = 0;
-	const char* kernel_src = "\n" \
-		"__kernel void square2( __global float* input, __global float* output, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] * input[i]; \n" \
-		"}                     \n";
-	EXPECT_EQ(program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL), AMF_OK);
-	EXPECT_TRUE(kernel);
-}
-
-TEST_F(Smoke, programs_registerKernelBinary) {
-	AMFPrograms* program;
-	factory->GetPrograms(&program);
-	AMF_KERNEL_ID kernel = 0;
-	const char* kernel_src = "\n" \
-		"__kernel void square2( __global float* input, __global float* output, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] * input[i]; \n" \
-		"}                     \n";
-	EXPECT_EQ(program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL), AMF_OK);
-	EXPECT_TRUE(kernel);
-}
-
-TEST_F(Smoke, compute_getMemoryType) {
+TEST_F(Smoke, compute_getMemoryTypes) {
 	AMFComputeDevice* device;
 	oclComputeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -204,112 +130,6 @@ TEST_F(Smoke, compute_getNativeCommandQueue) {
 	EXPECT_TRUE(pCompute->GetNativeCommandQueue());
 }
 
-TEST_F(Smoke, compute_getKernel) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFPrograms* program;
-	factory->GetPrograms(&program);
-	AMF_KERNEL_ID kernel = 0;
-	const char* kernel_src = "\n" \
-		"__kernel void square2( __global float* input, __global float* output, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] * input[i]; \n" \
-		"}                     \n";
-	program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
-	amf::AMFComputeKernelPtr pKernel;
-	EXPECT_EQ(pCompute->GetKernel(kernel, &pKernel), AMF_OK);
-	EXPECT_TRUE(pKernel);
-}
-
-TEST_F(Smoke, compute_putSyncPoint) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFComputeSyncPointPtr sync;
-	EXPECT_EQ(pCompute->PutSyncPoint(&sync), AMF_OK);
-	EXPECT_TRUE(sync);
-}
-
-TEST_F(Smoke, compute_flushQueue) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	EXPECT_EQ(device->CreateCompute(nullptr, &pCompute), AMF_OK);
-	EXPECT_NO_THROW(pCompute->FlushQueue());
-}
-
-TEST_F(Smoke, compute_finishQueue) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	EXPECT_NO_THROW(pCompute->FinishQueue());
-}
-
-TEST_F(Smoke, DISABLED_compute_fillPlane) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_OPENCL, AMF_SURFACE_RGBA, 2, 2, &surface);
-	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
-	amf_size origin[3] = { 0, 0, 0 };
-	amf_size region[3] = { 1, 1, 0 };
-	float color[4] = { 1, 1, 0, 0 };
-	EXPECT_NO_THROW(pCompute->FillPlane(plane, origin, region, color));
-}
-
-TEST_F(Smoke, DISABLED_compute_fillBuffer) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	EXPECT_TRUE(pCompute->GetMemoryType());
-}
-
-TEST_F(Smoke, DISABLED_compute_convertPlaneToBuffer) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_OPENCL, AMF_SURFACE_RGBA, 2, 2, &surface);
-	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
-	AMFBufferPtr buffer;
-	EXPECT_EQ(pCompute->ConvertPlaneToBuffer(plane, &buffer), AMF_OK);
-	EXPECT_TRUE(buffer);
-}
-
-//TODO make those tests work properly
-TEST_F(Smoke, DISABLED_compute_copyBuffer) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	EXPECT_TRUE(pCompute->GetMemoryType());
-}
-
-TEST_F(Smoke, DISABLED_compute_copyPlane) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_OPENCL, AMF_SURFACE_RGBA, 2, 2, &surface);
-	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
-	AMFPlanePtr plane2;
-	amf_size origin[3] = { 0, 0, 0 };
-	amf_size region[3] = { 1, 1, 0 };
-	float color[4] = { 1, 1, 0, 0 };
-	EXPECT_EQ(pCompute->CopyPlane(plane, origin, region, plane2, origin), AMF_OK);
-	EXPECT_TRUE(plane2);
-}
 // make variations of this test
 TEST_F(Smoke, DISABLED_compute_copyBufferToHost_blocking) {
 	AMFComputeDevice* device;
@@ -321,65 +141,4 @@ TEST_F(Smoke, DISABLED_compute_copyBufferToHost_blocking) {
 	void* dest = malloc(1024);
 	pCompute->CopyBufferToHost(buffer, 0, 1024, dest, true);
 	EXPECT_TRUE(dest);
-}
-
-TEST_F(Smoke, DISABLED_compute_copyBufferFromHost) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFBufferPtr buffer;
-	context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024, &buffer);
-	void* dest = malloc(1024);
-	pCompute->CopyBufferToHost(buffer, 0, 1024, dest, true);
-	AMFBufferPtr buffer2;
-	pCompute->CopyBufferFromHost(dest, 1024, buffer2, 0, true);
-	EXPECT_TRUE(buffer2);
-}
-
-TEST_F(Smoke, DISABLED_compute_copyPlaneToHost) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_OPENCL, AMF_SURFACE_RGBA, 2, 2, &surface);
-	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
-	amf_size origin[3] = { 0, 0, 0 };
-	amf_size region[3] = { 1, 1, 0 };
-	float color[4] = { 1, 1, 0, 0 };
-	void* dest = malloc(1024);
-	pCompute->CopyPlaneToHost(plane, origin, region, dest, 1024, true);
-	EXPECT_TRUE(dest);
-}
-
-TEST_F(Smoke, DISABLED_compute_copyPlaneFromHost) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_OPENCL, AMF_SURFACE_RGBA, 2, 2, &surface);
-	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
-	amf_size origin[3] = { 0, 0, 0 };
-	amf_size region[3] = { 1, 1, 0 };
-	float color[4] = { 1, 1, 0, 0 };
-	void* dest = malloc(1024);
-	pCompute->CopyPlaneToHost(plane, origin, region, dest, 1024, true);
-	AMFPlanePtr plane2;
-	pCompute->CopyPlaneFromHost(dest, origin, region, 1024, plane2, true);
-	EXPECT_TRUE(plane2);
-}
-
-TEST_F(Smoke, DISABLED_compute_convertPlaneToPlane) {
-	AMFComputeDevice* device;
-	oclComputeFactory->GetDeviceAt(0, &device);
-	AMFComputePtr pCompute;
-	device->CreateCompute(nullptr, &pCompute);
-	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_OPENCL, AMF_SURFACE_RGBA, 2, 2, &surface);
-	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
-	AMFPlanePtr plane2;
-	pCompute->ConvertPlaneToPlane(plane, &plane2, AMF_CHANNEL_ORDER_R, AMF_CHANNEL_UNSIGNED_INT32);
-	EXPECT_TRUE(plane2);
 }
