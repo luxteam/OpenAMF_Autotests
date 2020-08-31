@@ -407,7 +407,7 @@ TEST_F(OpenCL, DISABLED_AMFData_Convert) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, AMFData_Interop) {
+TEST_F(OpenCL, DISABLED_AMFData_Interop) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);

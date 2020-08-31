@@ -100,3 +100,11 @@ if(AMF_CORE_STATIC)
 else()
   target_link_libraries(${PROJECT_NAME} ${AMF_LOADER_NAME} gtest_main)
 endif()
+
+if(NOT WIN32)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
+    -framework AppKit \
+    -framework Metal \
+    -framework MetalKit"
+    )
+endif()

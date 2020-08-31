@@ -22,7 +22,7 @@ struct Metal : testing::Test {
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
 		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-		context1->GetMetalComputeFactory(&metalComputeFactory);
+		context1->GetMetalComputeFactory(&computeFactory);
 		context1->InitMetal();
 		g_AMFFactory.Init();
 		startTime = initiateTestLog();
