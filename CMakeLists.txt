@@ -79,7 +79,8 @@ SET(SOURCES
     api.cpp
     autotests.cpp
     geometry.cpp
-    implementation.cpp
+    OpenCL.cpp
+    Metal.cpp
     main.cpp
     multithread.cpp
     references.cpp
