@@ -76,14 +76,12 @@ SET(HEADERS
 
 # Local source files here
 SET(SOURCES
-    api.cpp
-    autotests.cpp
-    geometry.cpp
+    General.cpp
+    Complex.cpp
+    Implementation.cpp
     OpenCL.cpp
     Metal.cpp
-    main.cpp
-    multithread.cpp
-    references.cpp
+    Autotests.cpp
     )
 
 include_directories(../../include)

@@ -112,7 +112,7 @@ TEST_F(Metal, DISABLED_AMFCompute_FillPlane) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_METAL, AMF_SURFACE_RGBA, 2, 2, &surface);
+	context1->AllocSurface(AMF_MEMORY_Metal, AMF_SURFACE_RGBA, 2, 2, &surface);
 	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
 	amf_size origin[3] = { 0, 0, 0 };
 	amf_size region[3] = { 1, 1, 0 };
@@ -134,7 +134,7 @@ TEST_F(Metal, DISABLED_AMFCompute_ConvertPlaneToBuffer) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_METAL, AMF_SURFACE_RGBA, 2, 2, &surface);
+	context1->AllocSurface(AMF_MEMORY_Metal, AMF_SURFACE_RGBA, 2, 2, &surface);
 	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
 	AMFBufferPtr buffer;
 	EXPECT_EQ(pCompute->ConvertPlaneToBuffer(plane, &buffer), AMF_OK);
@@ -157,7 +157,7 @@ TEST_F(Metal, DISABLED_AMFCompute_CopyPlane) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_METAL, AMF_SURFACE_RGBA, 2, 2, &surface);
+	context1->AllocSurface(AMF_MEMORY_Metal, AMF_SURFACE_RGBA, 2, 2, &surface);
 	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
 	AMFPlanePtr plane2;
 	amf_size origin[3] = { 0, 0, 0 };
@@ -173,7 +173,7 @@ TEST_F(Metal, AMFCompute_CopyBufferToHost) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFBufferPtr buffer;
-	context1->AllocBuffer(AMF_MEMORY_METAL, 1024, &buffer);
+	context1->AllocBuffer(AMF_MEMORY_Metal, 1024, &buffer);
 	void* dest = malloc(1024);
 	pCompute->CopyBufferToHost(buffer, 0, 1024, dest, true);
 	EXPECT_TRUE(dest);
@@ -185,11 +185,11 @@ TEST_F(Metal, AMFCompute_CopyBufferFromHost) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFBufferPtr buffer;
-	context1->AllocBuffer(AMF_MEMORY_METAL, 1024, &buffer);
+	context1->AllocBuffer(AMF_MEMORY_Metal, 1024, &buffer);
 	void* dest = malloc(1024);
 	pCompute->CopyBufferToHost(buffer, 0, 1024, dest, true);
 	AMFBufferPtr buffer2;
-	context1->AllocBuffer(AMF_MEMORY_METAL, 1024, &buffer2);
+	context1->AllocBuffer(AMF_MEMORY_Metal, 1024, &buffer2);
 	pCompute->CopyBufferFromHost(dest, 1024, buffer2, 0, true);
 	EXPECT_TRUE(buffer2);
 }
@@ -200,7 +200,7 @@ TEST_F(Metal, DISABLED_AMFCompute_CopyPlaneToHost) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_METAL, AMF_SURFACE_RGBA, 2, 2, &surface);
+	context1->AllocSurface(AMF_MEMORY_Metal, AMF_SURFACE_RGBA, 2, 2, &surface);
 	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
 	amf_size origin[3] = { 0, 0, 0 };
 	amf_size region[3] = { 1, 1, 0 };
@@ -216,7 +216,7 @@ TEST_F(Metal, DISABLED_AMFCompute_CopyPlaneFromHost) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_METAL, AMF_SURFACE_RGBA, 2, 2, &surface);
+	context1->AllocSurface(AMF_MEMORY_Metal, AMF_SURFACE_RGBA, 2, 2, &surface);
 	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
 	amf_size origin[3] = { 0, 0, 0 };
 	amf_size region[3] = { 1, 1, 0 };
@@ -234,7 +234,7 @@ TEST_F(Metal, DISABLED_AMFCompute_ConvertPlaneToPlane) {
 	AMFComputePtr pCompute;
 	device->CreateCompute(nullptr, &pCompute);
 	AMFSurfacePtr surface;
-	context1->AllocSurface(AMF_MEMORY_METAL, AMF_SURFACE_RGBA, 2, 2, &surface);
+	context1->AllocSurface(AMF_MEMORY_Metal, AMF_SURFACE_RGBA, 2, 2, &surface);
 	AMFPlanePtr plane = surface->GetPlane(AMF_PLANE_PACKED);
 	AMFPlanePtr plane2;
 	pCompute->ConvertPlaneToPlane(plane, &plane2, AMF_CHANNEL_ORDER_R, AMF_CHANNEL_UNSIGNED_INT32);

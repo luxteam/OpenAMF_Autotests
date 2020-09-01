@@ -3,7 +3,9 @@
 struct Implementation : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
+	AMFComputeFactoryPtr oclComputeFactory;
 	AMFFactory* factory;
+	int deviceCount;
 	AMF_RESULT res;
 	chrono::time_point<chrono::system_clock> startTime;
 
@@ -20,23 +22,24 @@ struct Implementation : testing::Test {
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
 		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&oclComputeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
 		startTime = initiateTestLog();
 	}
 
 	~Implementation() {
+		context1.Release();
+		oclComputeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
 		terminateTestLog(startTime);
 	}
 };
 
-TEST_F(Implementation, AMFContext_InitOpenCL) {
+TEST_F(Implementation, AMFContext_GetOpenCLComputeFactory) {
 	AMFComputeFactoryPtr fact;
-	res = context1->InitOpenCL();
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
-}
-
-TEST_F(Implementation, AMFContext_InitMetal) {
-	AMFComputeFactoryPtr fact;
-	res = context1->InitMetal();
+	res = context1->GetOpenCLComputeFactory(&fact);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
