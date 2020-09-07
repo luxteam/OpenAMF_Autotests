@@ -37,8 +37,6 @@ struct OpenCL : testing::Test {
 	}
 };
 
-
-
 TEST_F(OpenCL, AMFComputeFactory_GetDeviceAt) {
 	AMFComputeDevice* device;
 	EXPECT_EQ(computeFactory->GetDeviceAt(0, &device), AMF_OK);
@@ -273,7 +271,7 @@ TEST_F(OpenCL, DISABLED_AMFComputeKernel_GetCompileWorkgroupSize) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, AMFComputeKernel_Enqueue) {
+TEST_F(OpenCL, DISABLED_AMFComputeKernel_Enqueue) {
 	AMFPrograms* pPrograms;
 	factory->GetPrograms(&pPrograms);
 	AMF_KERNEL_ID kernel = 0;

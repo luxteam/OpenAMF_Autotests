@@ -32,35 +32,41 @@ struct General : testing::Test {
 TEST_F(General, AMFFactory_CreateContext) {
 	res = factory->CreateContext(&context1);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_TRUE(context1);
 }
 
 TEST_F(General, DISABLED_AMFFactory_CreateComponent) {
 	AMFComponentPtr component;
 	res = factory->CreateComponent(context1, 0, &component);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_TRUE(component);
 }
 
 TEST_F(General, AMFFactory_SetCacheFolder) {
 	res = factory->SetCacheFolder(L"test");
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(factory->GetCacheFolder(), L"test");
 }
 
 TEST_F(General, AMFFactory_GetDebug) {
 	AMFDebug* debug;
 	res = factory->GetDebug(&debug);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_TRUE(debug);
 }
 
 TEST_F(General, AMFFactory_GetTrace) {
 	AMFTrace* trace;
 	res = factory->GetTrace(&trace);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_TRUE(trace);
 }
 
 TEST_F(General, AMFFactory_GetPrograms) {
 	AMFPrograms* programs;
 	res = factory->GetPrograms(&programs);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_TRUE(programs);
 }
 
 
@@ -68,16 +74,18 @@ TEST_F(General, AMFTrace_SetPath) {
 	AMFTrace* trace;
 	factory->GetTrace(&trace);
 	res = trace->SetPath(L"test");
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(General, DISABLED_AMFTrace_GetPath) {
 	AMFTrace* trace;
 	factory->GetTrace(&trace);
+	res = trace->SetPath(L"test");
 	amf_size* size;
 	*size = (amf_size)30;
-	res = trace->GetPath(new wchar_t[1000], size);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	wchar_t* str = new wchar_t[1000];
+	res = trace->GetPath(str, size);
+	EXPECT_EQ(str, L"test");
 }
 
 TEST_F(General, AMFVariantStruct_AMFVariantInit) {
@@ -89,8 +97,9 @@ TEST_F(General, AMFVariantStruct_AMFVariantInit) {
 TEST_F(General, AMFVariantStruct_AMFVariantClear) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
+	AMFVariantAssignString(&variant, "ТеStパーティーへ行かないか");
 	res = AMFVariantClear(&variant);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(General, AMFVariantStruct_AMFVariantAssignBool) {
@@ -231,7 +240,8 @@ TEST_F(General, AMFVariantStruct_AMFVariantChangeType) {
 	amf_double fl = 2.2;
 	AMFVariantAssignDouble(&variant2, fl);
 	res = AMFVariantChangeType(&variant2, &variant1, AMF_VARIANT_DOUBLE);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(AMFVariantGetType(&variant1), AMF_VARIANT_DOUBLE);
+	EXPECT_EQ(AMFVariantGetType(&variant2), AMF_VARIANT_DOUBLE);
 }
 
 TEST_F(General, AMFPropertyStorage_SetProperty) {
@@ -357,6 +367,7 @@ TEST_F(General, DISABLED_AMFData_Convert) {
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	res = buffer->Convert(AMF_MEMORY_OPENCL);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_NE(buffer->GetDataType(), AMF_MEMORY_OPENCL);
 }
 
 TEST_F(General, DISABLED_AMFData_Interop) {
