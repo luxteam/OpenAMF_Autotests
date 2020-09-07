@@ -6,6 +6,7 @@ struct Complex : testing::Test {
 	AMFContextPtr context1;
 	AMFComputeFactoryPtr oclComputeFactory;
 	AMFFactory* factory;
+	AMF_RESULT res;
 	int deviceCount;
 	chrono::time_point<chrono::system_clock> startTime;
 
@@ -21,16 +22,11 @@ struct Complex : testing::Test {
 		helper.Init();
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
-		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-		context1->GetOpenCLComputeFactory(&oclComputeFactory);
-		context1->InitOpenCL();
-		deviceCount = oclComputeFactory->GetDeviceCount();
 		g_AMFFactory.Init();
 		startTime = initiateTestLog();
 	}
 
 	~Complex() {
-		context1.Release();
 		oclComputeFactory.Release();
 		g_AMFFactory.Terminate();
 		helper.Terminate();
@@ -39,6 +35,11 @@ struct Complex : testing::Test {
 };
 
 TEST_F(Complex, kernel2_compute_complex_copenCl) {
+	context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+	context1->GetOpenCLComputeFactory(&oclComputeFactory);
+	context1->InitOpenCL();
+	g_AMFFactory.Init();
+	deviceCount = oclComputeFactory->GetDeviceCount();
 	g_AMFFactory.GetFactory()->SetCacheFolder(L"./cache");
 
 	AMFPrograms* pPrograms;
@@ -108,7 +109,7 @@ TEST_F(Complex, kernel2_compute_complex_copenCl) {
 
 		pKernel->GetCompileWorkgroupSize(sizeLocal);
 
-		pKernel->Enqueue(1, offset, sizeGlobal, sizeLocal);
+		pKernel->Enqueue(1, offset, sizeGlobal, NULL);
 		pCompute->FlushQueue();
 		pCompute->FinishQueue();
 		float* outputData2 = NULL;
@@ -295,5 +296,128 @@ TEST_F(Complex, DISABLED_metal_compute_complex) {
 	for (int k = 0; k < arraysSize; k++)
 	{
 		std::cout << "result[" << k << "] = " << outputData[k] << std::endl;
+	}
+}
+
+TEST_F(Complex, DISABLED_openCL_complex_multithread) {
+	const char* kernel_src = "\n" \
+		"__kernel void cos_native_test( __global float* output, __global float* input, \n" \
+		" const unsigned int count) {            \n" \
+		" int i = get_global_id(0);              \n" \
+		" if(i < count) \n" \
+		" output[i] = input[i]; \n" \
+		"}                     \n" \
+		"__kernel void sin_half_test(__global float* output, __global float* input, __global float* input2, \n" \
+		" const unsigned int count) {            \n" \
+		" int i = get_global_id(0);              \n" \
+		" if(i < count) \n" \
+		" output[i] = input[i]; \n" \
+		"}                     \n";
+
+	AMFPrograms* programCPU;
+	AMFPrograms* programGPU;
+	AMF_KERNEL_ID kernel1 = 1;
+	AMF_KERNEL_ID kernel2 = 2;
+	factory->GetPrograms(&programCPU);
+	factory->GetPrograms(&programGPU);
+	programCPU->RegisterKernelSource(&kernel1, L"test_kernel_name", "cos_native_test", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	programGPU->RegisterKernelSource(&kernel2, L"test_kernel_name2", "sin_half_test", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+
+	AMFComputeFactoryPtr computeFactoryCPU;
+	AMFComputeFactoryPtr computeFactoryGPU;
+
+	AMFContextPtr contextCPU;
+	AMFContextPtr contextGPU;
+
+	factory->CreateContext(&contextCPU);
+	factory->CreateContext(&contextGPU);
+
+	contextGPU->GetOpenCLComputeFactory(&computeFactoryGPU);
+	contextGPU->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+	contextGPU->InitOpenCL();
+
+	contextCPU->GetOpenCLComputeFactory(&computeFactoryCPU);
+	contextCPU->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_CPU);
+	contextCPU->InitOpenCL();
+
+	g_AMFFactory.Init();
+
+	AMFComputeDevicePtr cpuDevice;
+	AMFComputeDevicePtr gpuDevice;
+
+	computeFactoryCPU->GetDeviceAt(0, &cpuDevice);
+	computeFactoryGPU->GetDeviceAt(0, &gpuDevice);
+
+	AMFComputePtr cpuCompute;
+	AMFComputePtr gpuCompute;
+
+	cpuDevice->CreateCompute(nullptr, &cpuCompute);
+	gpuDevice->CreateCompute(nullptr, &gpuCompute);
+
+	///////////////////////////////
+	AMFBuffer* cpuInput = NULL;
+	AMFBuffer* gpuInput = NULL;
+	AMFBuffer* cpuOutput = NULL;
+	AMFBuffer* gpuOutput = NULL;
+	
+	// Transfer data to CPU/GPU local memory
+	contextCPU->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &cpuInput);
+	contextCPU->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &cpuOutput);
+	
+	contextGPU->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &gpuInput);
+	contextGPU->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &gpuOutput);
+
+	float* inputDataCPU = static_cast<float*>(cpuInput->GetNative());
+	float* inputDataGPU = static_cast<float*>(gpuInput->GetNative());
+	float* expectedData = new float[1024];
+	
+	for (int k = 0; k < 1024; k++)
+	{
+		inputDataCPU[k] = rand() / 50.00;
+		inputDataGPU[k] = rand() / 50.00;
+		expectedData[k] = inputDataCPU[k] + inputDataGPU[k];
+	}
+
+	amf::AMFComputeKernelPtr pKernel1;
+	cpuCompute->GetKernel(kernel1, &pKernel1);
+	amf::AMFComputeKernelPtr pKernel2;
+	gpuCompute->GetKernel(kernel2, &pKernel2);
+
+	//////////////////////////////////
+	cpuInput->Convert(AMF_MEMORY_OPENCL);
+	gpuInput->Convert(AMF_MEMORY_OPENCL);
+
+	pKernel1->SetArgBuffer(0, cpuOutput, AMF_ARGUMENT_ACCESS_WRITE);
+	pKernel2->SetArgBuffer(0, gpuOutput, AMF_ARGUMENT_ACCESS_WRITE);
+	pKernel1->SetArgBuffer(1, cpuInput, AMF_ARGUMENT_ACCESS_READ);
+	pKernel2->SetArgBuffer(1, gpuInput, AMF_ARGUMENT_ACCESS_READ);
+	pKernel1->SetArgInt32(3, 1024);
+	pKernel2->SetArgInt32(3, 1024);
+
+	amf_size sizeLocal[3] = { 1024, 0, 0 };
+	amf_size sizeGlobal[3] = { 1024, 0, 0 };
+	amf_size offset[3] = { 0, 0, 0 };
+
+	pKernel1->GetCompileWorkgroupSize(sizeLocal);
+	pKernel2->GetCompileWorkgroupSize(sizeLocal);
+
+	pKernel1->Enqueue(1, offset, sizeGlobal, NULL);
+	pKernel2->Enqueue(1, offset, sizeGlobal, NULL);
+
+	cpuCompute->FlushQueue();
+	gpuCompute->FlushQueue();
+
+	cpuCompute->FinishQueue();
+	gpuCompute->FinishQueue();
+
+	float* outputDataCpu = NULL;
+	float* outputDataGpu = NULL;
+	cpuOutput->MapToHost((void**)&outputDataCpu, 0, 1024 * sizeof(float), true);
+	gpuOutput->MapToHost((void**)&outputDataGpu, 0, 1024 * sizeof(float), true);
+
+
+	for (int k = 0; k < 1024; k++)
+	{
+		EXPECT_LE(abs(expectedData[k] - outputDataCpu[k] - outputDataGpu[k]), 0.01);
 	}
 }
