@@ -1,0 +1,56 @@
+@font-face {
+  font-family: "Open Sans";
+  src: url("../fonts/OpenSans-Regular.ttf") format("opentype"),
+        url("../fonts/OpenSans-Bold.ttf") format("opentype"),
+        url("../fonts/OpenSans-Regular.ttf") format("opentype"),
+        url("../fonts/OpenSans-Regular.ttf") format("opentype");
+ }
+
+body {
+  background-color: rgba(242, 242, 242, 1);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+table.baseTable {
+  border-collapse: collapse;
+  font-family: 'Open Sans';
+  font-size: 14px;
+  font-style: normal;
+  text-align: center;
+  margin-left: 5%;
+  width: 90%;
+}
+
+table.headerTable {
+  border-collapse: collapse;
+  font-family: 'Open Sans';
+  font-size: 14px;
+  font-style: normal;
+  text-align: center;
+  margin-left: 5%;
+  width: 90%;
+}
+
+.header {
+  font-family: 'Open Sans';
+  text-align: center;
+  font-size: 42px;
+  color: #881f1f;
+}
+
+
+.gpu-header {
+  font-family: 'Open Sans';
+  text-align: left;
+  font-size: 24px;
+  margin-left: 6%;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th {
+  background-color: #7d77881a
+}
