@@ -16,12 +16,10 @@
     <br>
     <table class="headerTable">
       <tr>
-        <th>Start time</th>
         <th>Commit hash</th>
         <th>Branch name</th>
       </tr>
       <tr>
-        <td>2020-09-07 16:31:41</td>
         <td>CommitHash</td>
         <td>BranchName</td>
       </tr>
@@ -58,7 +56,7 @@
     <br>
 
     {% for item in gpu_stat %}
-    <div class="gpu-header"><b>Radeon VII Windows 10</b></div>
+    <div class="gpu-header"><b>GPU_NAME-OS</b></div>
     <br>
     <table class="baseTable">
       <tr>
@@ -78,9 +76,9 @@
           <tr>
             <td>{{ group_info['name'] }}</td>
             <td>HostName</td>
-            <td><a href="http://example.com">DetailsLink</a></td>
-            <td><a href="http://example.com">TestLogLink</a></td>
-            <td><a href="http://example.com">MemoryLogLink</a></td>
+            <td><a href="details_{{ group_info['name'] }}_GPU-OS.html">Details</a></td>
+            <td><a href="http://example.com">Link to .log file</a></td>
+            <td><a href="http://example.com">Link to .out.log file</a></td>
             <td>{{ group_info['tests'] }}</td>
             <td>{{ group_info['tests'] - group_info['failures'] - group_info['disabled'] - group_info['errors'] }}</td>
             <td>{{ group_info['failures'] }}</td>
