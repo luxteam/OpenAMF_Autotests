@@ -38,7 +38,7 @@ for result in statistics:
     )
 out_file = template.render(gpu_stat=gpu_stat)
 
-with open('report/realMainPage.html', 'w') as fh:
+with open('report/mainPage.html', 'w') as fh:
     fh.write(out_file)
 
 
