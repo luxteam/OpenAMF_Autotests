@@ -49,7 +49,7 @@ def main():
     for result in statistics:
         gpu_stat.append(
             {
-            'GPU' : result['gpu'],
+            'Platform' : result['platform'],
             'Configuration' : result['configuration'],
             'Hostname' : result['hostname'],
             'Total' : result['tests'],
@@ -92,7 +92,7 @@ def main():
                         test_case['Result'] += fail['failure']
 
             test_suite = {
-                'GPU' : stat['gpu'],
+                'Platform' : stat['platform'],
                 'Configuration' : stat['configuration'],
                 'Name' : result["name"],
                 'Total' : result['tests'],
@@ -105,7 +105,7 @@ def main():
                 'Test cases': result['testsuite']
                 }
             
-            detailed_report_name = 'details_' + result['name'] + '_' + stat['gpu'] + '_' + stat['configuration'] + '.html'
+            detailed_report_name = 'details_' + result['name'] + '_' + stat['platform'] + '_' + stat['configuration'] + '.html'
             try:
                 out_file = template.render(test_suite=test_suite)
             except Exception as err:

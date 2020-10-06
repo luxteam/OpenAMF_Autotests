@@ -29,7 +29,7 @@
 
     <table class="headerTable">
       <tr>
-        <th>GPU</th>
+        <th>Platform</th>
         <th>Configuration</th>
         <th>Total</th>
         <th>Passed</th>
@@ -40,7 +40,7 @@
       </tr>
       {% for item in gpu_stat %}
         <tr>
-          <td>{{ item['GPU']  }}</td>
+          <td>{{ item['Platform']  }}</td>
           <td>{{ item['Configuration'] | replace("_", " ") }}</td>
           <td>{{ item['Total'] }}</td>
           <td>{{ item['Passed'] }}</td>
@@ -56,7 +56,7 @@
     <br>
 
     {% for item in gpu_stat %}
-    <div class="gpu-header"><b>{{ item['GPU'] }} ({{ item['Configuration'] | replace("_", " ") }})</b></div>
+    <div class="gpu-header"><b>{{ item['Platform'] }} ({{ item['Configuration'] | replace("_", " ") }})</b></div>
     <br>
     <table class="baseTable">
       <tr>
@@ -76,9 +76,9 @@
           <tr>
             <td>{{ group_info['name'] }}</td>
             <td>{{ item['Hostname'] }}</td>
-            <td><a href="details_{{ group_info['name'] }}_{{ item['GPU'] }}_{{ item['Configuration'] }}.html">Details</a></td>
-            <td><a href="Test-{{ item['GPU'] }}.{{ item['Configuration'] }}.log">Link to .log file</a></td>
-            <td><a href="Test-{{ item['GPU'] }}.{{ item['Configuration'] }}.out.log">Link to .out.log file</a></td>
+            <td><a href="details_{{ group_info['name'] }}_{{ item['Platform'] }}_{{ item['Configuration'] }}.html">Details</a></td>
+            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.log">Link to .log file</a></td>
+            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.out.log">Link to .out.log file</a></td>
             <td>{{ group_info['tests'] }}</td>
             <td>{{ group_info['tests'] - group_info['failures'] - group_info['disabled'] - group_info['errors'] }}</td>
             <td>{{ group_info['failures'] }}</td>
