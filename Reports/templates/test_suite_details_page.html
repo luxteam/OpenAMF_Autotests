@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../resources/css/table_style.css">
+    <link rel="stylesheet" href="resources/css/table_style.css">
   </head>
   <body>
 
@@ -28,8 +28,8 @@
       <tr>
         <td>{{ test_suite["Name"] }}</td>
         <td>{{ test_suite["Time stamp"] }}</td>
-        <td>GPU_NAME-OS</td>
-        <td>CONFIGURATION</td>
+        <td>{{ test_suite["GPU"] }}</td>
+        <td>{{ test_suite["Configuration"] | replace("_", " ") }}</td>
         <td>{{ test_suite["Total"] }}</td>
         <td>{{ test_suite["Passed"] }}</td>
         <td>{{ test_suite["Failed"] }}</td>
