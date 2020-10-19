@@ -582,19 +582,18 @@ TEST_F(AMF_Color, NotSameFalseAMFColor) {
 	bool resu = color1.operator!=(color2);
 	EXPECT_FALSE(resu);
 }
-
-/*TEST_F(AMF_Color, AbnormalAMFColor) {
+//todo
+TEST_F(AMF_Color, AbnormalAMFColor) {
 	color2 = AMFConstructColor(555, 124, 125, 1);
 	EXPECT_ANY_THROW(color2);
-}*/
+}
 
-/*struct AMF_Guid : testing::Test {
+struct AMF_Guid : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
 	AMFFactory* factory;
 	AMF_RESULT res;
 	AMFGuid guid1 = AMFGuid(1, 2, 3, 41, 42, 43, 44, 45, 46, 47, 48);
-	AMFGuid guid2;
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
@@ -605,7 +604,7 @@ TEST_F(AMF_Color, NotSameFalseAMFColor) {
 		terminateTestSuiteLog();
 	}
 
-	AMF_Guid() { //????
+	AMF_Guid() {
 		helper.Init();
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
@@ -632,16 +631,16 @@ TEST_F(AMF_Guid, SameFalseAMFGuid) {
 }
 
 TEST_F(AMF_Guid, NotSameAMFGuid) {
-	AMFGuid guid1 = AMFGuid(1, 2, 3, 41, 42, 43, 44, 45, 46, 47, 4800000000);
+	AMFGuid guid2 = AMFGuid(1, 2, 3, 41, 42, 43, 44, 45, 46, 47, 4800000000);
 	bool resu = guid1.operator!=(guid2);
 	EXPECT_TRUE(resu);
 }
 
 TEST_F(AMF_Guid, NotSameFalseAMFGuid) {
-	guid2 = guid1;
+	AMFGuid guid2 = guid1;
 	bool resu = guid1.operator!=(guid2);
 	EXPECT_FALSE(resu);
-}*/
+}
 
 struct AMF_Variant : testing::Test {
 	AMFFactoryHelper helper;
@@ -786,7 +785,7 @@ TEST_F(AMF_Variant, SameWStringFalseAMFVariant) {
 	EXPECT_FALSE(wstr1.operator==(wstr2));
 }
 
-/* Нет оператора !=
+/*Нет оператора !=
 TEST_F(AMF_Variant, NotSameStringAMFVariant) {
 	AMFVariant::String str1;
 	AMFVariant::String str2;
@@ -869,7 +868,7 @@ TEST_F(AMF_PropertyStorage, GetPropertyNotFoundAMFPropertyStorage) {
 	EXPECT_EQ(ares, AMF_NOT_FOUND);
 }
 
-/*
+/* todo
 TEST_F(AMF_PropertyStorage, GetPropertyStringOkAMFPropertyStorage) {
 	AMF_RESULT AMF_STD_CALL ares0 = ps->SetProperty(L"tru", var1);
 	AMF_RESULT AMF_STD_CALL ares = ps->GetPropertyString(L"tru", var1);
@@ -904,9 +903,36 @@ TEST_F(AMF_PropertyStorage, GetPropertyCountAMFPropertyStorage) {
 	amf_size AMF_STD_CALL res2 = ps->GetPropertyCount();
 	EXPECT_EQ(res, 1);
 }
-/*
+
 TEST_F(AMF_PropertyStorage, GetPropertyAtAMFPropertyStorage) {
 	AMF_RESULT AMF_STD_CALL ares0 = ps->SetProperty(L"tru", var1);
 	AMF_RESULT AMF_STD_CALL res = ps->GetPropertyAt(0, L"tru", 3, var1);
 	EXPECT_EQ(res, 0);
-}*/
+}
+
+TEST_F(AMF_PropertyStorage, ClearAMFPropertyStorage) {
+	ps->SetProperty(L"tru", var1);
+	bool AMF_STD_CALL hp = ps->HasProperty(L"tru");
+	EXPECT_TRUE(hp);
+	AMF_RESULT AMF_STD_CALL res = ps->Clear();
+	hp = ps->HasProperty(L"tru");
+	EXPECT_FALSE(hp);
+}
+
+TEST_F(AMF_PropertyStorage, AddToAMFPropertyStorage) {
+	ps->SetProperty(L"tru", var1);
+	AMFPropertyStorage* ps2;
+	ps->AddTo(ps2, true, true);
+	AMF_RESULT AMF_STD_CALL ares = ps2->GetProperty(L"tru", var1);
+	EXPECT_EQ(ares, AMF_OK);
+}
+
+TEST_F(AMF_PropertyStorage, CopyToAMFPropertyStorage) {
+	ps->SetProperty(L"tru", var1);
+	AMFPropertyStorage* ps2;
+	ps->CopyTo(ps2, true);
+	AMF_RESULT AMF_STD_CALL ares = ps2->GetProperty(L"tru", var1);
+	EXPECT_EQ(ares, AMF_OK);
+}
+
+//observer?
