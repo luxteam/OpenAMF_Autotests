@@ -12,7 +12,7 @@ struct OpenCL_AMFComputeFactory : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFComputeFactory");
 	}
 
 	static void TearDownTestCase() {
@@ -57,7 +57,7 @@ struct OpenCL_AMFDeviceCompute : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFDeviceCompute");
 	}
 
 	static void TearDownTestCase() {
@@ -112,7 +112,7 @@ struct OpenCL_AMFCompute : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFCompute");
 	}
 
 	static void TearDownTestCase() {
@@ -333,7 +333,7 @@ struct OpenCL_AMFComputeKernel : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFComputeKernel");
 	}
 
 	static void TearDownTestCase() {
@@ -432,7 +432,7 @@ struct OpenCL_AMFComponent : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFComponent");
 	}
 
 	static void TearDownTestCase() {
@@ -507,7 +507,7 @@ struct OpenCL_AMFCaps : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFCaps");
 	}
 
 	static void TearDownTestCase() {
@@ -554,7 +554,7 @@ struct OpenCL_AMFIOCaps : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFIOCaps");
 	}
 
 	static void TearDownTestCase() {
@@ -601,7 +601,7 @@ struct OpenCL_AMFDataAllocatorCB : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFDataAllocatorCB");
 	}
 
 	static void TearDownTestCase() {

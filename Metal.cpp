@@ -12,7 +12,7 @@ struct Metal_AMFComputeFactory : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFComputeFactory");
 	}
 
 	static void TearDownTestCase() {
@@ -57,7 +57,7 @@ struct Metal_AMFDeviceCompute : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFDeviceCompute");
 	}
 
 	static void TearDownTestCase() {
@@ -112,7 +112,7 @@ struct Metal_AMFCompute : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFCompute");
 	}
 
 	static void TearDownTestCase() {
@@ -333,7 +333,7 @@ struct Metal_AMFComputeKernel : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFComputeKernel");
 	}
 
 	static void TearDownTestCase() {
@@ -432,7 +432,7 @@ struct Metal_AMFComponent : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFComponent");
 	}
 
 	static void TearDownTestCase() {
@@ -507,7 +507,7 @@ struct Metal_AMFCaps : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFCaps");
 	}
 
 	static void TearDownTestCase() {
@@ -554,7 +554,7 @@ struct Metal_AMFIOCaps : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFIOCaps");
 	}
 
 	static void TearDownTestCase() {
@@ -601,7 +601,7 @@ struct Metal_AMFDataAllocatorCB : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFDataAllocatorCB");
 	}
 
 	static void TearDownTestCase() {
