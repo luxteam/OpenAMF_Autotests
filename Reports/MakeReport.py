@@ -7,10 +7,26 @@ from glob import glob
 from shutil import copytree, rmtree
 import logging
 
+SKIP_FILE = os.path.join('resources', 'tests_skips.json')
+
 
 logging.basicConfig(filename='report_building.log', level=logging.INFO, format='%(asctime)s :: %(levelname)s :: %(message)s')
 logger = logging.getLogger(__name__)
 
+def calculateNotImplemented(stat):
+    total_non_implemented = 0
+    for result in stat['testsuites']:
+        for test_case in result['testsuite']:
+            if 'failures' in test_case and any('actual: 9 vs 9' in fail['failure'] for fail in test_case['failures']):
+                total_non_implemented += 1
+    return total_non_implemented
+
+def calculateTestSuiteNotImplemented(suite):
+    total_non_implemented = 0
+    for test_case in suite:
+        if 'failures' in test_case and any('actual: 9 vs 9' in fail['failure'] for fail in test_case['failures']):
+            total_non_implemented += 1
+    return total_non_implemented
 
 def main():
     logger.info('Started report building')
@@ -47,6 +63,8 @@ def main():
     # Forming information for 'Summary' section
     gpu_stat = list()
     for result in statistics:
+        for res in result['testsuites']:
+            res['not_implemented'] = calculateTestSuiteNotImplemented(res['testsuite'])
         gpu_stat.append(
             {
             'Platform' : result['platform'],
@@ -57,6 +75,7 @@ def main():
             'Failed' : result['failures'],
             'Disabled' : result['disabled'],
             'Error' : result['errors'],
+            'Not implemented' : sum(map(calculateNotImplemented, statistics)),
             'Time taken': result['time'],
             'Test suites': result['testsuites']
             }
@@ -84,9 +103,19 @@ def main():
             for test_case in result['testsuite']:
                 if 'DISABLED_' in test_case['name']:
                     test_case['Result'] = 'Skipped'
+                    try:
+                        with open(SKIP_FILE, 'r') as file:
+                            skips_reasons = json.load(file)
+                            if test_case['name'] in skips_reasons:
+                                test_case['Result'] += 'due to<br>' + skips_reasons[test_case['name']]
+                    except Exception as e:
+                        print(e.message)
                 elif not 'failures' in test_case:
                     test_case['Result'] = 'Passed'
+                elif any('actual: 9 vs 9' in fail['failure'] for fail in test_case['failures']):
+                    test_case['Result'] = 'Not implemented'
                 else:
+                    print
                     test_case['Result'] = 'Failure<br>'
                     for fail in test_case['failures']:
                         test_case['Result'] += fail['failure']
@@ -100,9 +129,10 @@ def main():
                 'Failed' : result['failures'],
                 'Disabled' : result['disabled'],
                 'Error' : result['errors'],
+                'Not implemented' : calculateNotImplemented(stat),
                 'Time taken': result['time'],
                 'Time stamp': result['timestamp'].replace('T', ' ').replace('Z', ''),
-                'Test cases': result['testsuite']
+                'Test cases': [v for v in sorted (result['testsuite'], key=lambda item: item['Result'])]
                 }
             
             detailed_report_name = 'details_' + result['name'] + '_' + stat['platform'] + '_' + stat['configuration'] + '.html'

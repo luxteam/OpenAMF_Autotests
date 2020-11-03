@@ -36,6 +36,7 @@
         <th>Failed</th>
         <th>Disabled</th>
         <th>Errors</th>
+        <th>Not implemented</th>
         <th>Time taken</th>
       </tr>
       {% for item in gpu_stat %}
@@ -47,6 +48,7 @@
           <td>{{ item['Failed'] }}</td>
           <td>{{ item['Disabled'] }}</td>
           <td>{{ item['Error'] }}</td>
+          <td>{{ item['Not implemented'] }}</td>
           <td>{{ item['Time taken'] }}</td>
         </tr>
       {% endfor %}
@@ -70,6 +72,7 @@
         <th>Failed</th>
         <th>Disabled</th>
         <th>Errors</th>
+        <th>Not implemented</th>
         <th>Time taken</th>
       </tr>
         {% for group_info in item['Test suites'] %}
@@ -84,6 +87,7 @@
             <td>{{ group_info['failures'] }}</td>
             <td>{{ group_info['disabled'] }}</td>
             <td>{{ group_info['errors'] }}</td>
+            <td>{{ group_info['not_implemented'] }}</td>
             <td>{{ group_info['time'] }}</td>
           </tr>
         {% endfor %}
@@ -94,6 +98,7 @@
           <th>{{ item['Failed'] }}</td>
           <th>{{ item['Disabled'] }}</td>
           <th>{{ item['Error'] }}</td>
+          <th>{{ item['Not implemented'] }}</td>
           <th>{{ item['Time taken'] }}</td>
         </tr>
     </table>
