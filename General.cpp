@@ -1,5 +1,4 @@
 #include "autotests.h"
-#include "../../common/Thread.h"
 
 struct General : testing::Test {
 	AMFFactoryHelper helper;
@@ -423,44 +422,4 @@ TEST_F(General, AMFPrograms_RegisterKernelBinary) {
 	factory->GetPrograms(&program);
 	AMF_KERNEL_ID kernel = 0;
 	EXPECT_NE(program->RegisterKernelBinary(&kernel, L"kenelIDname", "square2", NULL, NULL, NULL), AMF_NOT_IMPLEMENTED);
-}
-
-struct AMF_Mutex : testing::Test {
-	AMFFactoryHelper helper;
-	AMFContextPtr context1;
-	AMFFactory* factory;
-	AMF_RESULT res;
-	AMFMutex mutex1 = AMFMutex();
-	AMFColor color1 = AMFConstructColor(148, 52, 227, 1);
-	//color2 = AMFConstructColor(-28, 127, 173, 0);
-	chrono::time_point<chrono::system_clock> startTime;
-
-	static void SetUpTestCase() {
-		initiateTestSuiteLog("AMFMutex");
-	}
-
-	static void TearDownTestCase() {
-		terminateTestSuiteLog();
-	}
-
-	AMF_Mutex() {
-		helper.Init();
-		factory = helper.GetFactory();
-		factory->CreateContext(&context1);
-		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-		startTime = initiateTestLog();
-	}
-
-	~AMF_Mutex() {
-		context1.Release();
-		terminateTestLog(startTime);
-	}
-};
-
-TEST_F(AMF_Mutex, AMFMutex1) {
-	mutex1.Lock();
-	color1 = AMFConstructColor(-28, 127, 173, 0);
-	//...
-	mutex1.Unlock();
-	//EXPECT_EQ();
 }

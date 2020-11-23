@@ -4,6 +4,8 @@
 #include "../../include/core/Factory.h"
 #include "../../common/AMFFactory.h"
 #include "../../include/core/Buffer.h"
+#include "../../common/Thread.h"
+#include "../../common/AMFSTL.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <fstream>
@@ -11,6 +13,7 @@
 #include <chrono>
 #include <ctime>  
 #include <cmath>
+#include <thread>
 using namespace std;
 using namespace amf;
 
