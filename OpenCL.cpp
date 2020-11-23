@@ -1,6 +1,8 @@
 #include "autotests.h"
 
-struct OpenCL : testing::Test {
+// AMFComputeFactory
+
+struct OpenCL_AMFComputeFactory : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
 	AMFComputeFactoryPtr computeFactory;
@@ -10,14 +12,14 @@ struct OpenCL : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("OpenCL");
+		initiateTestSuiteLog("OpenCL_AMFComputeFactory");
 	}
 
 	static void TearDownTestCase() {
 		terminateTestSuiteLog();
 	}
 
-	OpenCL() {
+	OpenCL_AMFComputeFactory() {
 		helper.Init();
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
@@ -28,7 +30,7 @@ struct OpenCL : testing::Test {
 		startTime = initiateTestLog();
 	}
 
-	~OpenCL() {
+	~OpenCL_AMFComputeFactory() {
 		context1.Release();
 		computeFactory.Release();
 		g_AMFFactory.Terminate();
@@ -37,13 +39,52 @@ struct OpenCL : testing::Test {
 	}
 };
 
-TEST_F(OpenCL, AMFComputeFactory_GetDeviceAt) {
+TEST_F(OpenCL_AMFComputeFactory, AMFComputeFactory_GetDeviceAt) {
 	AMFComputeDevice* device;
 	EXPECT_EQ(computeFactory->GetDeviceAt(0, &device), AMF_OK);
 	EXPECT_TRUE(device);
 }
 
-TEST_F(OpenCL, AMFDeviceCompute_CreateCompute) {
+// AMFDeviceCompute
+
+struct OpenCL_AMFDeviceCompute : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("OpenCL_AMFDeviceCompute");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	OpenCL_AMFDeviceCompute() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&computeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~OpenCL_AMFDeviceCompute() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(OpenCL_AMFDeviceCompute, CreateCompute) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -51,7 +92,7 @@ TEST_F(OpenCL, AMFDeviceCompute_CreateCompute) {
 	EXPECT_TRUE(pCompute);
 }
 
-TEST_F(OpenCL, AMFDeviceCompute_CreateComputeEx) {
+TEST_F(OpenCL_AMFDeviceCompute, CreateComputeEx) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -59,7 +100,46 @@ TEST_F(OpenCL, AMFDeviceCompute_CreateComputeEx) {
 	EXPECT_TRUE(pCompute);
 }
 
-TEST_F(OpenCL, AMFCompute_GetKernel) {
+// AMFCompute
+
+struct OpenCL_AMFCompute : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("OpenCL_AMFCompute");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	OpenCL_AMFCompute() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&computeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~OpenCL_AMFCompute() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(OpenCL_AMFCompute, GetKernel) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -80,7 +160,7 @@ TEST_F(OpenCL, AMFCompute_GetKernel) {
 	EXPECT_TRUE(pKernel);
 }
 
-TEST_F(OpenCL, AMFCompute_PutSyncPoint) {
+TEST_F(OpenCL_AMFCompute, PutSyncPoint) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -90,7 +170,7 @@ TEST_F(OpenCL, AMFCompute_PutSyncPoint) {
 	EXPECT_TRUE(sync);
 }
 
-TEST_F(OpenCL, AMFCompute_FlushQueue) {
+TEST_F(OpenCL_AMFCompute, FlushQueue) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -98,7 +178,7 @@ TEST_F(OpenCL, AMFCompute_FlushQueue) {
 	EXPECT_NO_THROW(pCompute->FlushQueue());
 }
 
-TEST_F(OpenCL, AMFCompute_FinishQueue) {
+TEST_F(OpenCL_AMFCompute, FinishQueue) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -106,7 +186,7 @@ TEST_F(OpenCL, AMFCompute_FinishQueue) {
 	EXPECT_NO_THROW(pCompute->FinishQueue());
 }
 
-TEST_F(OpenCL, DISABLED_AMFCompute_FillPlane) {
+TEST_F(OpenCL_AMFCompute, DISABLED_FillPlane) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -120,7 +200,7 @@ TEST_F(OpenCL, DISABLED_AMFCompute_FillPlane) {
 	EXPECT_NE(pCompute->FillPlane(plane, origin, region, color), AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, AMFCompute_FillBuffer) {
+TEST_F(OpenCL_AMFCompute, FillBuffer) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -128,7 +208,7 @@ TEST_F(OpenCL, AMFCompute_FillBuffer) {
 	EXPECT_TRUE(pCompute->GetMemoryType());
 }
 
-TEST_F(OpenCL, DISABLED_AMFCompute_ConvertPlaneToBuffer) {
+TEST_F(OpenCL_AMFCompute, DISABLED_ConvertPlaneToBuffer) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -142,7 +222,7 @@ TEST_F(OpenCL, DISABLED_AMFCompute_ConvertPlaneToBuffer) {
 }
 
 // TODO: Implement
-TEST_F(OpenCL, DISABLED_AMFCompute_CopyBuffer) {
+TEST_F(OpenCL_AMFCompute, DISABLED_CopyBuffer) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -151,7 +231,7 @@ TEST_F(OpenCL, DISABLED_AMFCompute_CopyBuffer) {
 }
 
 // SEH exception, find null
-TEST_F(OpenCL, DISABLED_AMFCompute_CopyPlane) {
+TEST_F(OpenCL_AMFCompute, DISABLED_CopyPlane) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -167,7 +247,7 @@ TEST_F(OpenCL, DISABLED_AMFCompute_CopyPlane) {
 	EXPECT_TRUE(plane2);
 }
 
-TEST_F(OpenCL, AMFCompute_CopyBufferToHost) {
+TEST_F(OpenCL_AMFCompute, CopyBufferToHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -179,7 +259,7 @@ TEST_F(OpenCL, AMFCompute_CopyBufferToHost) {
 	EXPECT_TRUE(dest);
 }
 
-TEST_F(OpenCL, AMFCompute_CopyBufferFromHost) {
+TEST_F(OpenCL_AMFCompute, CopyBufferFromHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -194,7 +274,7 @@ TEST_F(OpenCL, AMFCompute_CopyBufferFromHost) {
 	EXPECT_TRUE(buffer2);
 }
 
-TEST_F(OpenCL, DISABLED_AMFCompute_CopyPlaneToHost) {
+TEST_F(OpenCL_AMFCompute, DISABLED_CopyPlaneToHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -210,7 +290,7 @@ TEST_F(OpenCL, DISABLED_AMFCompute_CopyPlaneToHost) {
 	EXPECT_TRUE(dest);
 }
 
-TEST_F(OpenCL, DISABLED_AMFCompute_CopyPlaneFromHost) {
+TEST_F(OpenCL_AMFCompute, DISABLED_CopyPlaneFromHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -228,7 +308,7 @@ TEST_F(OpenCL, DISABLED_AMFCompute_CopyPlaneFromHost) {
 	EXPECT_TRUE(plane2);
 }
 
-TEST_F(OpenCL, DISABLED_AMFCompute_ConvertPlaneToPlane) {
+TEST_F(OpenCL_AMFCompute, DISABLED_ConvertPlaneToPlane) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -241,8 +321,47 @@ TEST_F(OpenCL, DISABLED_AMFCompute_ConvertPlaneToPlane) {
 	EXPECT_TRUE(plane2);
 }
 
+// AMFComputeKernel
+
+struct OpenCL_AMFComputeKernel : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("OpenCL_AMFComputeKernel");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	OpenCL_AMFComputeKernel() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&computeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~OpenCL_AMFComputeKernel() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
 // Causes crash, needs to be investigated
-TEST_F(OpenCL, DISABLED_AMFComputeKernel_GetCompileWorkgroupSize) {
+TEST_F(OpenCL_AMFComputeKernel, DISABLED_GetCompileWorkgroupSize) {
 	AMFPrograms* pPrograms;
 	factory->GetPrograms(&pPrograms);
 	AMF_KERNEL_ID kernel = 0;
@@ -271,7 +390,7 @@ TEST_F(OpenCL, DISABLED_AMFComputeKernel_GetCompileWorkgroupSize) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComputeKernel_Enqueue) {
+TEST_F(OpenCL_AMFComputeKernel, DISABLED_Enqueue) {
 	AMFPrograms* pPrograms;
 	factory->GetPrograms(&pPrograms);
 	AMF_KERNEL_ID kernel = 0;
@@ -301,62 +420,218 @@ TEST_F(OpenCL, DISABLED_AMFComputeKernel_Enqueue) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_Init) {
+// AMFComponent
+
+struct OpenCL_AMFComponent : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("OpenCL_AMFComponent");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	OpenCL_AMFComponent() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&computeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~OpenCL_AMFComponent() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(OpenCL_AMFComponent, DISABLED_Init) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_ReInit) {
+TEST_F(OpenCL_AMFComponent, DISABLED_ReInit) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_Terminate) {
+TEST_F(OpenCL_AMFComponent, DISABLED_Terminate) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_SubmitInput) {
+TEST_F(OpenCL_AMFComponent, DISABLED_SubmitInput) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_QueryOutput) {
+TEST_F(OpenCL_AMFComponent, DISABLED_QueryOutput) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_Drain) {
+TEST_F(OpenCL_AMFComponent, DISABLED_Drain) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_Flush) {
+TEST_F(OpenCL_AMFComponent, DISABLED_Flush) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_SetOutputDataAllocatorCB) {
+TEST_F(OpenCL_AMFComponent, DISABLED_SetOutputDataAllocatorCB) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFComponent_GetCaps) {
+TEST_F(OpenCL_AMFComponent, DISABLED_GetCaps) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFCaps_GetInputCaps) {
+// AMFCaps
+
+struct OpenCL_AMFCaps : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("OpenCL_AMFCaps");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	OpenCL_AMFCaps() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&computeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~OpenCL_AMFCaps() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(OpenCL_AMFCaps, DISABLED_GetInputCaps) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFCaps_GetOutputCaps) {
+TEST_F(OpenCL_AMFCaps, DISABLED_GetOutputCaps) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFIOCaps_GetFormatAt) {
+// AMFIOCaps
+
+struct OpenCL_AMFIOCaps : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("OpenCL_AMFIOCaps");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	OpenCL_AMFIOCaps() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&computeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~OpenCL_AMFIOCaps() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(OpenCL_AMFIOCaps, DISABLED_GetFormatAt) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFIOCaps_GetMemoryTypeAt) {
+TEST_F(OpenCL_AMFIOCaps, DISABLED_GetMemoryTypeAt) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFDataAllocatorCB_AllocBuffer) {
+// AMFDataAllocator
+
+struct OpenCL_AMFDataAllocatorCB : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("OpenCL_AMFDataAllocatorCB");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	OpenCL_AMFDataAllocatorCB() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&computeFactory);
+		context1->InitOpenCL();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~OpenCL_AMFDataAllocatorCB() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(OpenCL_AMFDataAllocatorCB, DISABLED_AllocBuffer) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(OpenCL, DISABLED_AMFDataAllocatorCB_AllocSurface) {
+TEST_F(OpenCL_AMFDataAllocatorCB, DISABLED_AllocSurface) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }

@@ -1,6 +1,8 @@
 #include "autotests.h"
 
-struct Metal : testing::Test {
+// AMFComputeFactory
+
+struct Metal_AMFComputeFactory : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
 	AMFComputeFactoryPtr computeFactory;
@@ -10,14 +12,14 @@ struct Metal : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Metal");
+		initiateTestSuiteLog("Metal_AMFComputeFactory");
 	}
 
 	static void TearDownTestCase() {
 		terminateTestSuiteLog();
 	}
 
-	Metal() {
+	Metal_AMFComputeFactory() {
 		helper.Init();
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
@@ -28,7 +30,7 @@ struct Metal : testing::Test {
 		startTime = initiateTestLog();
 	}
 
-	~Metal() {
+	~Metal_AMFComputeFactory() {
 		context1.Release();
 		computeFactory.Release();
 		g_AMFFactory.Terminate();
@@ -37,13 +39,52 @@ struct Metal : testing::Test {
 	}
 };
 
-TEST_F(Metal, AMFComputeFactory_GetDeviceAt) {
+TEST_F(Metal_AMFComputeFactory, AMFComputeFactory_GetDeviceAt) {
 	AMFComputeDevice* device;
 	EXPECT_EQ(computeFactory->GetDeviceAt(0, &device), AMF_OK);
 	EXPECT_TRUE(device);
 }
 
-TEST_F(Metal, AMFDeviceCompute_CreateCompute) {
+// AMFDeviceCompute
+
+struct Metal_AMFDeviceCompute : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("Metal_AMFDeviceCompute");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	Metal_AMFDeviceCompute() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetMetalComputeFactory(&computeFactory);
+		context1->InitMetal();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~Metal_AMFDeviceCompute() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(Metal_AMFDeviceCompute, CreateCompute) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -51,7 +92,7 @@ TEST_F(Metal, AMFDeviceCompute_CreateCompute) {
 	EXPECT_TRUE(pCompute);
 }
 
-TEST_F(Metal, AMFDeviceCompute_CreateComputeEx) {
+TEST_F(Metal_AMFDeviceCompute, CreateComputeEx) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -59,7 +100,46 @@ TEST_F(Metal, AMFDeviceCompute_CreateComputeEx) {
 	EXPECT_TRUE(pCompute);
 }
 
-TEST_F(Metal, AMFCompute_GetKernel) {
+// AMFCompute
+
+struct Metal_AMFCompute : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("Metal_AMFCompute");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	Metal_AMFCompute() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetMetalComputeFactory(&computeFactory);
+		context1->InitMetal();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~Metal_AMFCompute() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(Metal_AMFCompute, GetKernel) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -80,7 +160,7 @@ TEST_F(Metal, AMFCompute_GetKernel) {
 	EXPECT_TRUE(pKernel);
 }
 
-TEST_F(Metal, AMFCompute_PutSyncPoint) {
+TEST_F(Metal_AMFCompute, PutSyncPoint) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -90,7 +170,7 @@ TEST_F(Metal, AMFCompute_PutSyncPoint) {
 	EXPECT_TRUE(sync);
 }
 
-TEST_F(Metal, AMFCompute_FlushQueue) {
+TEST_F(Metal_AMFCompute, FlushQueue) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -98,7 +178,7 @@ TEST_F(Metal, AMFCompute_FlushQueue) {
 	EXPECT_NO_THROW(pCompute->FlushQueue());
 }
 
-TEST_F(Metal, AMFCompute_FinishQueue) {
+TEST_F(Metal_AMFCompute, FinishQueue) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -106,7 +186,7 @@ TEST_F(Metal, AMFCompute_FinishQueue) {
 	EXPECT_NO_THROW(pCompute->FinishQueue());
 }
 
-TEST_F(Metal, DISABLED_AMFCompute_FillPlane) {
+TEST_F(Metal_AMFCompute, DISABLED_FillPlane) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -120,7 +200,7 @@ TEST_F(Metal, DISABLED_AMFCompute_FillPlane) {
 	EXPECT_NE(pCompute->FillPlane(plane, origin, region, color), AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, AMFCompute_FillBuffer) {
+TEST_F(Metal_AMFCompute, FillBuffer) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -128,7 +208,7 @@ TEST_F(Metal, AMFCompute_FillBuffer) {
 	EXPECT_TRUE(pCompute->GetMemoryType());
 }
 
-TEST_F(Metal, DISABLED_AMFCompute_ConvertPlaneToBuffer) {
+TEST_F(Metal_AMFCompute, DISABLED_ConvertPlaneToBuffer) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -142,7 +222,7 @@ TEST_F(Metal, DISABLED_AMFCompute_ConvertPlaneToBuffer) {
 }
 
 // TODO: Implement
-TEST_F(Metal, DISABLED_AMFCompute_CopyBuffer) {
+TEST_F(Metal_AMFCompute, DISABLED_CopyBuffer) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -151,7 +231,7 @@ TEST_F(Metal, DISABLED_AMFCompute_CopyBuffer) {
 }
 
 // SEH exception, find null
-TEST_F(Metal, DISABLED_AMFCompute_CopyPlane) {
+TEST_F(Metal_AMFCompute, DISABLED_CopyPlane) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -167,7 +247,7 @@ TEST_F(Metal, DISABLED_AMFCompute_CopyPlane) {
 	EXPECT_TRUE(plane2);
 }
 
-TEST_F(Metal, AMFCompute_CopyBufferToHost) {
+TEST_F(Metal_AMFCompute, CopyBufferToHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -179,7 +259,7 @@ TEST_F(Metal, AMFCompute_CopyBufferToHost) {
 	EXPECT_TRUE(dest);
 }
 
-TEST_F(Metal, AMFCompute_CopyBufferFromHost) {
+TEST_F(Metal_AMFCompute, CopyBufferFromHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -194,7 +274,7 @@ TEST_F(Metal, AMFCompute_CopyBufferFromHost) {
 	EXPECT_TRUE(buffer2);
 }
 
-TEST_F(Metal, DISABLED_AMFCompute_CopyPlaneToHost) {
+TEST_F(Metal_AMFCompute, DISABLED_CopyPlaneToHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -210,7 +290,7 @@ TEST_F(Metal, DISABLED_AMFCompute_CopyPlaneToHost) {
 	EXPECT_TRUE(dest);
 }
 
-TEST_F(Metal, DISABLED_AMFCompute_CopyPlaneFromHost) {
+TEST_F(Metal_AMFCompute, DISABLED_CopyPlaneFromHost) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -228,7 +308,7 @@ TEST_F(Metal, DISABLED_AMFCompute_CopyPlaneFromHost) {
 	EXPECT_TRUE(plane2);
 }
 
-TEST_F(Metal, DISABLED_AMFCompute_ConvertPlaneToPlane) {
+TEST_F(Metal_AMFCompute, DISABLED_ConvertPlaneToPlane) {
 	AMFComputeDevice* device;
 	computeFactory->GetDeviceAt(0, &device);
 	AMFComputePtr pCompute;
@@ -241,8 +321,47 @@ TEST_F(Metal, DISABLED_AMFCompute_ConvertPlaneToPlane) {
 	EXPECT_TRUE(plane2);
 }
 
+// AMFComputeKernel
+
+struct Metal_AMFComputeKernel : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("Metal_AMFComputeKernel");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	Metal_AMFComputeKernel() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetMetalComputeFactory(&computeFactory);
+		context1->InitMetal();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~Metal_AMFComputeKernel() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
 // Causes crash, needs to be investigated
-TEST_F(Metal, DISABLED_AMFComputeKernel_GetCompileWorkgroupSize) {
+TEST_F(Metal_AMFComputeKernel, DISABLED_GetCompileWorkgroupSize) {
 	AMFPrograms* pPrograms;
 	factory->GetPrograms(&pPrograms);
 	AMF_KERNEL_ID kernel = 0;
@@ -253,7 +372,7 @@ TEST_F(Metal, DISABLED_AMFComputeKernel_GetCompileWorkgroupSize) {
 		" if(i < count) \n" \
 		" output[i] = input[i] * input[i]; \n" \
 		"}                     \n";
-	pPrograms->RegisterKernelSource(&kernel, L"kernelIDName", "multiplication", strlen(kernel_src), (amf_uint8*)kernel_src, NULL); 
+	pPrograms->RegisterKernelSource(&kernel, L"kernelIDName", "multiplication", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
 	AMFComputeDevicePtr pComputeDevice;
 	computeFactory->GetDeviceAt(0, &pComputeDevice);
 	pComputeDevice->GetNativeContext();
@@ -265,13 +384,13 @@ TEST_F(Metal, DISABLED_AMFComputeKernel_GetCompileWorkgroupSize) {
 	pCompute->GetKernel(kernel, &pKernel);
 
 	amf_size* size = new amf_size;
-	*size = (amf_size) 64;
+	*size = (amf_size)64;
 
 	res = pKernel->GetCompileWorkgroupSize(size);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, AMFComputeKernel_Enqueue) {
+TEST_F(Metal_AMFComputeKernel, DISABLED_Enqueue) {
 	AMFPrograms* pPrograms;
 	factory->GetPrograms(&pPrograms);
 	AMF_KERNEL_ID kernel = 0;
@@ -301,62 +420,218 @@ TEST_F(Metal, AMFComputeKernel_Enqueue) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_Init) {
+// AMFComponent
+
+struct Metal_AMFComponent : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("Metal_AMFComponent");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	Metal_AMFComponent() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetMetalComputeFactory(&computeFactory);
+		context1->InitMetal();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~Metal_AMFComponent() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(Metal_AMFComponent, DISABLED_Init) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_ReInit) {
+TEST_F(Metal_AMFComponent, DISABLED_ReInit) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_Terminate) {
+TEST_F(Metal_AMFComponent, DISABLED_Terminate) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_SubmitInput) {
+TEST_F(Metal_AMFComponent, DISABLED_SubmitInput) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_QueryOutput) {
+TEST_F(Metal_AMFComponent, DISABLED_QueryOutput) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_Drain) {
+TEST_F(Metal_AMFComponent, DISABLED_Drain) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_Flush) {
+TEST_F(Metal_AMFComponent, DISABLED_Flush) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_SetOutputDataAllocatorCB) {
+TEST_F(Metal_AMFComponent, DISABLED_SetOutputDataAllocatorCB) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFComponent_GetCaps) {
+TEST_F(Metal_AMFComponent, DISABLED_GetCaps) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFCaps_GetInputCaps) {
+// AMFCaps
+
+struct Metal_AMFCaps : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("Metal_AMFCaps");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	Metal_AMFCaps() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetMetalComputeFactory(&computeFactory);
+		context1->InitMetal();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~Metal_AMFCaps() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(Metal_AMFCaps, DISABLED_GetInputCaps) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFCaps_GetOutputCaps) {
+TEST_F(Metal_AMFCaps, DISABLED_GetOutputCaps) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFIOCaps_GetFormatAt) {
+// AMFIOCaps
+
+struct Metal_AMFIOCaps : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("Metal_AMFIOCaps");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	Metal_AMFIOCaps() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetMetalComputeFactory(&computeFactory);
+		context1->InitMetal();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~Metal_AMFIOCaps() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(Metal_AMFIOCaps, DISABLED_GetFormatAt) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFIOCaps_GetMemoryTypeAt) {
+TEST_F(Metal_AMFIOCaps, DISABLED_GetMemoryTypeAt) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFDataAllocatorCB_AllocBuffer) {
+// AMFDataAllocator
+
+struct Metal_AMFDataAllocatorCB : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFComputeFactoryPtr computeFactory;
+	AMFFactory* factory;
+	int deviceCount;
+	AMF_RESULT res;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("Metal_AMFDataAllocatorCB");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	Metal_AMFDataAllocatorCB() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetMetalComputeFactory(&computeFactory);
+		context1->InitMetal();
+		g_AMFFactory.Init();
+		startTime = initiateTestLog();
+	}
+
+	~Metal_AMFDataAllocatorCB() {
+		context1.Release();
+		computeFactory.Release();
+		g_AMFFactory.Terminate();
+		helper.Terminate();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(Metal_AMFDataAllocatorCB, DISABLED_AllocBuffer) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Metal, DISABLED_AMFDataAllocatorCB_AllocSurface) {
+TEST_F(Metal_AMFDataAllocatorCB, DISABLED_AllocSurface) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
