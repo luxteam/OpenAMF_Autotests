@@ -1,5 +1,7 @@
 #include "autotests.h"
 
+AMFMutex mutex1 = amf_create_mutex(false, L"\\global1");
+
 struct AMF_Mutex : testing::Test {
 	AMF_RESULT res;
 	chrono::time_point<chrono::system_clock> startTime;
@@ -23,20 +25,19 @@ struct AMF_Mutex : testing::Test {
 };
 
 void printThread() {
-	AMFMutex mutex1 = amf_open_mutex(L"\\global1");
 	mutex1.Lock();
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 10; i++)
 		std::cout << "thread function Executing" << std::endl;
 	mutex1.Unlock();
 }
 
 TEST_F(AMF_Mutex, AMFMutex1) {
-	AMFMutex mutex1 = amf_create_mutex(false, L"\\global1");
 	threadObj = thread(printThread);
 	mutex1.Lock();
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 10; i++)
 		std::cout << "Display From MainThread" << std::endl;
 	mutex1.Unlock();
+	threadObj.join();
 	ASSERT_TRUE(false);
 }
 
