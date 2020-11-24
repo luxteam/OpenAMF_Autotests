@@ -1,6 +1,10 @@
 #include "autotests.h"
 
 AMFMutex mutex1 = amf_create_mutex(false, L"\\global1");
+amf_handle crit_section = amf_create_critical_section();
+amf_handle event = amf_create_event(false, true, L"test_event");
+amf_long x = 5;
+
 
 struct AMF_Mutex : testing::Test {
 	AMF_RESULT res;
@@ -24,6 +28,7 @@ struct AMF_Mutex : testing::Test {
 	}
 };
 
+/*
 void printThread() {
 	mutex1.Lock();
 	for (int i = 0; i < 10; i++)
@@ -40,26 +45,98 @@ TEST_F(AMF_Mutex, AMFMutex1) {
 	threadObj.join();
 	ASSERT_TRUE(false);
 }
+*/
+void inc() {
+	amf_atomic_inc(&x);
+}
 
 TEST_F(AMF_Mutex, amf_atomic_inc) {
+	threadObj = thread(inc);
+	amf_atomic_inc(&x);
+	threadObj.join();
+	EXPECT_EQ(x, 7);
+	x = 5;
 }
 
 TEST_F(AMF_Mutex, amf_atomic_dec) {
+	threadObj = thread(inc);
+	amf_atomic_dec(&x);
+	threadObj.join();
+	EXPECT_EQ(x, 5);
+	x = 5;
 }
 
-TEST_F(AMF_Mutex, amf_create_critical_section) {
+#define MAX_ARRAY 5
+
+int test_arr[MAX_ARRAY];
+
+void EmptyArray()
+{
+	cout << "EmptyArray" << endl;
+	amf_enter_critical_section(crit_section);
+	for (int x = 0; x < (MAX_ARRAY + 1); x++) test_arr[x] = 0;
+	Sleep(1000);
+	amf_leave_critical_section(crit_section);
 }
 
-TEST_F(AMF_Mutex, amf_delete_critical_section) {
+void PrintArray()
+{
+	cout << "PrintArray" << endl;
+	amf_enter_critical_section(crit_section);
+	for (int x = 0; x < (MAX_ARRAY + 1); x++) cout << test_arr[x] << " ";
+	cout << endl;
+	Sleep(1000);
+	amf_leave_critical_section(crit_section);
 }
 
-TEST_F(AMF_Mutex, amf_enter_critical_section) {
+void FullArray()
+{
+	cout << "FullArray" << endl;
+	amf_enter_critical_section(crit_section);
+	for (int x = 0; x < (MAX_ARRAY + 1); x++) test_arr[x] = x;
+	Sleep(1000);
+	amf_leave_critical_section(crit_section);
 }
 
-TEST_F(AMF_Mutex, amf_leave_critical_section) {
+void operateArray() {
+	EmptyArray();
+	PrintArray();
+	FullArray();
+	PrintArray();
+	EmptyArray();
+	PrintArray();
+}
+
+TEST_F(AMF_Mutex, DISABLED_amf_create_critical_section) {
+	threadObj = thread(operateArray);
+	operateArray();
+	EXPECT_TRUE(false);
+}
+
+TEST_F(AMF_Mutex, DISABLED_amf_delete_critical_section) {
+	amf_delete_critical_section(crit_section);
+	EXPECT_ANY_THROW(amf_enter_critical_section(crit_section));
+	crit_section = amf_create_critical_section();
+}
+
+TEST_F(AMF_Mutex, DISABLED_amf_enter_critical_section) {
+}
+
+TEST_F(AMF_Mutex, DISABLED_amf_leave_critical_section) {
+}
+
+void eventTest() {
+	amf_wait_for_event(event, 100);
+	x *= 2;
 }
 
 TEST_F(AMF_Mutex, amf_create_event) {
+	threadObj = thread(eventTest);
+	x++;
+	amf_set_event(event);
+	threadObj.join();
+	EXPECT_EQ(x, 12);
+	x = 5;
 }
 
 TEST_F(AMF_Mutex, amf_delete_event) {
