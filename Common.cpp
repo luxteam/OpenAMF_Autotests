@@ -28,7 +28,7 @@ struct AMF_Mutex : testing::Test {
 	}
 };
 
-/*
+
 void printThread() {
 	mutex1.Lock();
 	for (int i = 0; i < 10; i++)
@@ -45,7 +45,7 @@ TEST_F(AMF_Mutex, AMFMutex1) {
 	threadObj.join();
 	ASSERT_TRUE(false);
 }
-*/
+
 void inc() {
 	amf_atomic_inc(&x);
 }
