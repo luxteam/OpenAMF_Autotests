@@ -1,4 +1,5 @@
 #include "autotests.h"
+#include "../../common/Thread.h"
 
 struct General : testing::Test {
 	AMFFactoryHelper helper;
@@ -936,3 +937,154 @@ TEST_F(AMF_PropertyStorage, CopyToAMFPropertyStorage) {
 }
 
 //observer?
+
+
+struct AMF_Mutex : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFFactory* factory;
+	AMF_RESULT res;
+	AMFMutex mutex1;
+	AMFQueue<AMFColor> queue1;
+	AMFColor color1 = AMFConstructColor(148, 52, 227, 1);
+	AMFColor color2 = AMFConstructColor(-28, 127, 173, 0);
+	AMFColor color3;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("AMFMutex");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	AMF_Mutex() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		startTime = initiateTestLog();
+	}
+
+	~AMF_Mutex() {
+		context1.Release();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(AMF_Mutex, AMFMutexValid) {
+	mutex1.Lock();
+	EXPECT_EQ(mutex1.IsValid(), TRUE);
+	mutex1.Unlock();
+	EXPECT_EQ(mutex1.IsValid(), TRUE);
+	mutex1.~AMFMutex();
+	EXPECT_EQ(mutex1.IsValid(), FALSE);
+}
+
+TEST_F(AMF_Mutex, AMFMutexGet) {
+	queue1.Add(0, color1);
+	queue1.Add(0, color2);
+	mutex1.Lock();
+	amf_ulong front = 0;
+	queue1.Get(front, color3, 300);
+	mutex1.Unlock();
+	EXPECT_EQ(color1, color3);
+}
+
+TEST_F(AMF_Mutex, AMFMutexDoubleLock) {
+	queue1.Add(0, color1);
+	queue1.Add(0, color2);
+	bool firstLock = mutex1.Lock();
+	bool canLock = mutex1.Lock();
+	amf_ulong front = 0;
+	queue1.Get(front, color3, 300);
+	EXPECT_TRUE(firstLock);
+	EXPECT_FALSE(canLock);
+	mutex1.Unlock();
+}
+
+TEST_F(AMF_Mutex, AMFMutexDoubleUnlock) {
+	queue1.Add(0, color1);
+	queue1.Add(0, color2);
+	mutex1.Lock();
+	amf_ulong front = 0;
+	queue1.Get(front, color3, 300);
+	bool firstUnlock = mutex1.Unlock();
+	bool canUnlock = mutex1.Unlock();
+	EXPECT_TRUE(firstUnlock);
+	EXPECT_FALSE(canUnlock);
+}
+
+struct AMF_Queue : testing::Test {
+	AMFFactoryHelper helper;
+	AMFContextPtr context1;
+	AMFFactory* factory;
+	AMF_RESULT res;
+	AMFQueue<AMFColor> queue1;
+	AMFColor color1 = AMFConstructColor(148, 52, 227, 1);
+	AMFColor color2 = AMFConstructColor(-28, 127, 173, 0);
+	AMFColor color3;
+	chrono::time_point<chrono::system_clock> startTime;
+
+	static void SetUpTestCase() {
+		initiateTestSuiteLog("AMFQueue");
+	}
+
+	static void TearDownTestCase() {
+		terminateTestSuiteLog();
+	}
+
+	AMF_Queue() {
+		helper.Init();
+		factory = helper.GetFactory();
+		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		startTime = initiateTestLog();
+	}
+
+	~AMF_Queue() {
+		context1.Release();
+		terminateTestLog(startTime);
+	}
+};
+
+TEST_F(AMF_Queue, AMFQueueSize) {
+	EXPECT_EQ(queue1.GetQueueSize(), 0);
+	EXPECT_EQ(queue1.GetSize(), 0);
+	queue1.Add(0, color1);
+	queue1.Add(0, color2);
+	EXPECT_EQ(queue1.GetQueueSize(), 0);
+	EXPECT_EQ(queue1.GetSize(), 2);
+}
+
+TEST_F(AMF_Queue, AMFQueueQSize) {
+	EXPECT_EQ(queue1.GetQueueSize(), 0);
+	EXPECT_EQ(queue1.GetSize(), 0);
+	amf_int32 siz = 3;
+	queue1.SetQueueSize(siz);
+	EXPECT_EQ(queue1.GetQueueSize(), 3);
+	EXPECT_EQ(queue1.GetSize(), 0);
+}
+
+TEST_F(AMF_Queue, AMFQueueAddGet) {
+	EXPECT_EQ(queue1.GetSize(), 0);
+	queue1.Add(0, color1);
+	queue1.Add(0, color2);
+	EXPECT_EQ(queue1.GetSize(), 2);
+	amf_ulong front = 0;
+	queue1.Get(front, color3, 300);
+	front++;
+	AMFColor color4;
+	queue1.Get(front, color4, 300);
+	EXPECT_EQ(color1, color3);
+	EXPECT_EQ(color2, color4);
+}
+
+TEST_F(AMF_Queue, AMFQueueClear) {
+	EXPECT_EQ(queue1.GetSize(), 0);
+	queue1.Add(0, color1);
+	EXPECT_EQ(queue1.GetSize(), 1);
+	queue1.Clear();
+	EXPECT_EQ(queue1.GetSize(), 0);
+}
