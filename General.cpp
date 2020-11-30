@@ -979,7 +979,7 @@ TEST_F(AMF_Mutex, AMFMutexValid) {
 	mutex1.Unlock();
 	EXPECT_EQ(mutex1.IsValid(), true);
 	mutex1.~AMFMutex();
-	EXPECT_EQ(mutex1.IsValid(), FALSE);
+	EXPECT_EQ(mutex1.IsValid(), false);
 }
 
 TEST_F(AMF_Mutex, AMFMutexGet) {
