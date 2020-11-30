@@ -647,7 +647,7 @@ struct AMF_Variant : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
 	AMFFactory* factory;
-	AMFVariant var1 = AMFVariant((amf_bool) TRUE);
+	AMFVariant var1 = AMFVariant((amf_bool) true);
 	AMFVariant var2 = AMFVariant();
 	chrono::time_point<chrono::system_clock> startTime;
 
@@ -717,7 +717,7 @@ TEST_F(AMF_Variant, ClearAMFVariant) {
 }
 
 TEST_F(AMF_Variant, ConcersionAMFVariant) {
-	EXPECT_EQ(var1.ToBool(), TRUE);
+	EXPECT_EQ(var1.ToBool(), true);
 } //писать ли прямо для всего??
 
 TEST_F(AMF_Variant, CastAMFVariant) {
@@ -733,12 +733,12 @@ TEST_F(AMF_Variant, ChangeTypeItselfAMFVariant) {
 TEST_F(AMF_Variant, AttachAMFVariant) {
 	AMFVariant var3 = AMFVariant();
 	var3.Attach(var1);
-	EXPECT_EQ(var3.operator amf_bool(), TRUE);
+	EXPECT_EQ(var3.operator amf_bool(), true);
 }
 
 TEST_F(AMF_Variant, DetachAMFVariant) {
 	AMFVariant var3 = AMFVariant(var1.Detach());
-	EXPECT_EQ(var3.operator amf_bool(), TRUE);
+	EXPECT_EQ(var3.operator amf_bool(), true);
 }
 
 TEST_F(AMF_Variant, StringAMFVariant) {
@@ -975,9 +975,9 @@ struct AMF_Mutex : testing::Test {
 
 TEST_F(AMF_Mutex, AMFMutexValid) {
 	mutex1.Lock();
-	EXPECT_EQ(mutex1.IsValid(), TRUE);
+	EXPECT_EQ(mutex1.IsValid(), true);
 	mutex1.Unlock();
-	EXPECT_EQ(mutex1.IsValid(), TRUE);
+	EXPECT_EQ(mutex1.IsValid(), true);
 	mutex1.~AMFMutex();
 	EXPECT_EQ(mutex1.IsValid(), FALSE);
 }

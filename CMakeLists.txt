@@ -76,7 +76,7 @@ SET(HEADERS
 
 # Local source files here
 SET(SOURCES
-    # General.cpp
+    General.cpp
     Complex.cpp
     Implementation.cpp
     OpenCL.cpp
