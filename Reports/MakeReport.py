@@ -6,12 +6,24 @@ import argparse
 from glob import glob
 from shutil import copytree, rmtree
 import logging
+import re
 
 SKIP_FILE = os.path.join('resources', 'tests_skips.json')
 
 
 logging.basicConfig(filename='report_building.log', level=logging.INFO, format='%(asctime)s :: %(levelname)s :: %(message)s')
 logger = logging.getLogger(__name__)
+
+def find_code(case_name):
+    for source_file in glob(os.path.join("..", '*.cpp')):
+        with open(source_file, 'r', encoding='utf-8') as source_code:
+            file_text = source_code.read()
+
+        pattern = "AUG\|(.*?)\|UGA"
+        try:
+            return re.search(r"%s\)\s*{((.|\n)*?(?=}))" % case_name, file_text).group(1)
+        except Exception as e:
+            pass
 
 def calculateNotImplemented(stat):
     total_non_implemented = 0
@@ -39,8 +51,8 @@ def main():
     args = parser.parse_args()
 
     try:
-        if os.path.exists(os.path.join(args.test_results, 'resources')):
-            rmtree(os.path.join(args.test_results, 'resources'), True)
+        # if os.path.exists(os.path.join(args.test_results, 'resources')):
+        #     rmtree(os.path.join(args.test_results, 'resources'), True)
         copytree('resources', os.path.join(args.test_results, 'resources'))
         logger.info('Report resources were copied successfully')
     except Exception as err:
@@ -99,15 +111,21 @@ def main():
     template = env.get_template('test_suite_details_page.html')
     for stat in statistics:
         for result in stat['testsuites']:
-
             for test_case in result['testsuite']:
+                # Fetch test cases's code from source files
+                test_case['Code'] = find_code(test_case['name'])
+                if (test_case['Code']):
+                    test_case['Code'] = test_case['Code'].replace('\n', '<br>')
+
+                # Process test's statuses
+                test_case['Fails Reason'] = ''
                 if 'DISABLED_' in test_case['name']:
                     test_case['Result'] = 'Skipped'
                     try:
                         with open(SKIP_FILE, 'r') as file:
                             skips_reasons = json.load(file)
                             if test_case['name'] in skips_reasons:
-                                test_case['Result'] += 'due to<br>' + skips_reasons[test_case['name']]
+                                test_case['Result'] += 'due to <br><a>' + skips_reasons[test_case['name']] + "</a>"
                     except Exception as e:
                         print(e.message)
                 elif not 'failures' in test_case:
@@ -115,10 +133,9 @@ def main():
                 elif any('actual: 9 vs 9' in fail['failure'] for fail in test_case['failures']):
                     test_case['Result'] = 'Not implemented'
                 else:
-                    print
                     test_case['Result'] = 'Failure<br>'
                     for fail in test_case['failures']:
-                        test_case['Result'] += fail['failure']
+                        test_case['Fails Reason'] += fail['failure']
 
             test_suite = {
                 'Platform' : stat['platform'],
@@ -142,7 +159,7 @@ def main():
                 logger.error('Fail during "{}" report building: {}'.format(detailed_report_name, str(err)))
                 rc = -1
 
-            with open(os.path.join(args.test_results, detailed_report_name), 'w') as fh:
+            with open(os.path.join(args.test_results, detailed_report_name), 'w', encoding='utf-8') as fh:
                 fh.write(out_file)
 
     return rc

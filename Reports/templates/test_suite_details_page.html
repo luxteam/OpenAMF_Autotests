@@ -2,6 +2,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="resources/css/table_style.css">
+    <link rel="stylesheet" href="resources/css/button_style.css">
   </head>
   <body>
 
@@ -51,23 +52,69 @@
         <th>Test Status</th>
         <th>Time spent</th>
         <th>Time started</th>
+        <th>Failures Log</th>
+        <th>Test's Code</th>
       </tr>
       </th>
       </tr>
       {% for test_case in test_suite['Test cases'] %}
         <tr>
           <td>{{ test_case['name'] }}</td>
-          <td>{{ test_case['Result'] }}</td>
+          <td>{{ test_case['Result']}}</td>
           <td>{{ test_case['time'] }}</td>
           <td>{{ test_case['timestamp'].replace('T', ' ').replace('Z', '') }}</td>
+          <td> <button class="popup-button" id="Button{{ loop.index }}">Log</button> </td>
+          <td> <button class="popup-button" id="Code{{ loop.index }}">Code</button></td>
         </tr>
+
+        <div id="Error{{ loop.index }}" class="modal">
+          <div class="modal-content">
+            <span class="close" id="Close{{ loop.index }}">&times;</span>
+            <h3>{{ test_case['name'] }} log</h1> <br>
+            <p>{{ test_case['Fails Reason'] }}</p>
+          </div>
+        </div>
+
+        <div id="SourceCode{{ loop.index }}" class="modal">
+          <div class="modal-content">
+            <span class="close" id="CloseCode{{ loop.index }}">&times;</span>
+            <h3>{{ test_case['name'] }} code</h3>
+            <p>{{ test_case['Code'] }}</p>
+          </div>
+        </div>
+
+        <script>
+            var errbtn = document.getElementById("Button{{ loop.index }}");
+            var span = document.getElementById("Close{{ loop.index }}");
+
+            errbtn.onclick = function() {
+              document.getElementById("Error{{ loop.index }}").style.display = "block";
+            }
+            span.onclick = function() {
+              document.getElementById("Error{{ loop.index }}").style.display = "none";
+            }
+            window.onclick = function(event) {
+              if (event.target == document.getElementById("Error{{ loop.index }}")) {
+                document.getElementById("Error{{ loop.index }}").style.display = "none";
+              }
+            }
+
+            var codebtn = document.getElementById("Code{{ loop.index }}");
+            var codespan = document.getElementById("CloseCode{{ loop.index }}");
+
+            codebtn.onclick = function() {
+              document.getElementById("SourceCode{{ loop.index }}").style.display = "block";
+            }
+            codespan.onclick = function() {
+              document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+            }
+            window.onclick = function(event) {
+              if (event.target == document.getElementById("SourceCode{{ loop.index }}")) {
+                document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+              }
+            }
+        </script>
       {% endfor %}
-      <!-- <tr>
-        <td>AMFPropertyStorage_AddTo</td>
-        <td>Failure: very bad error</td>
-        <td>0.009s</td>
-        <td>2020-09-07T16:31:41Z</td>
-      </tr> -->
     </table>
   </body>
 </html>
