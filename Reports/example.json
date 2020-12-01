@@ -1,4 +1,7 @@
 {
+  "platform": "test",
+  "hostname": "test",
+  "configuration": "test",
   "tests": 122,
   "failures": 23,
   "disabled": 57,
@@ -14,7 +17,7 @@
       "disabled": 8,
       "errors": 0,
       "timestamp": "2020-09-07T16:31:41Z",
-      "time": "0.387s",
+      "time": "0s",
       "testsuite": [
         {
           "name": "AMFFactory_CreateContext",

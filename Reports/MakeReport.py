@@ -92,7 +92,7 @@ def main():
             'Error' : result['errors'],
             'Not implemented' : not_implemented,
             'Time taken': result['time'],
-            'Test suites': result['testsuites']
+            'Test suites': sorted(result['testsuites'], key=lambda suite : suite['name'])
             }
         )
 

@@ -99,6 +99,12 @@
 
             errbtn.onclick = function() {
               document.getElementById("Error{{ loop.index }}").style.display = "block";
+              document.onkeydown = function(evt) {
+                  evt = evt || window.event;
+                  if (evt.keyCode == 27) {
+                    document.getElementById("Error{{ loop.index }}").style.display = "none";
+                  }
+              };
             }
             span.onclick = function() {
               document.getElementById("Error{{ loop.index }}").style.display = "none";
@@ -114,6 +120,12 @@
 
             codebtn.onclick = function() {
               document.getElementById("SourceCode{{ loop.index }}").style.display = "block";
+              document.onkeydown = function(evt) {
+                  evt = evt || window.event;
+                  if (evt.keyCode == 27) {
+                    document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+                  }
+              };
             }
             codespan.onclick = function() {
               document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
