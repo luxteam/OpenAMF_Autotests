@@ -88,7 +88,13 @@
             <td>{{ group_info['disabled'] }}</td>
             <td>{{ group_info['errors'] }}</td>
             <td>{{ group_info['not_implemented'] }}</td>
-            <td>{{ group_info['time'] }}</td>
+            <td>
+              {% if (group_info['time'] == '0s') %}
+              -
+              {% else %}
+              {{ group_info['time'] }}
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
         <tr>

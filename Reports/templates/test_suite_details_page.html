@@ -61,8 +61,20 @@
         <tr>
           <td>{{ test_case['name'] }}</td>
           <td>{{ test_case['Result']}}</td>
-          <td>{{ test_case['time'] }}</td>
-          <td>{{ test_case['timestamp'].replace('T', ' ').replace('Z', '') }}</td>
+          <td>
+            {% if (test_case['time'] == '0s') %}
+            -
+            {% else %}
+            {{ test_case['time'] }}
+            {% endif %}
+          </td>
+          <td>
+            {% if (test_case['timestamp'].replace('T', ' ').replace('Z', '') == '1970-01-01 03:00:00') %}
+            -
+            {% else %}
+            {{ test_case['timestamp'].replace('T', ' ').replace('Z', '') }}
+            {% endif %}
+          </td>
           <td> <button class="popup-button" id="Button{{ loop.index }}">Log</button> </td>
           <td> <button class="popup-button" id="Code{{ loop.index }}">Code</button></td>
         </tr>
