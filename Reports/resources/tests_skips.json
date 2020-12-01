@@ -1,3 +1,20 @@
 {
-    "DISABLED_openCL_complex_multithread": "https://adc.luxoft.com/jira/browse/STVITT-129"
+    "DISABLED_openCL_complex_multithread": "https://adc.luxoft.com/jira/browse/STVITT-129",
+    "DISABLED_AMFFactory_CreateComponent": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_AMFData_Interop": "https://adc.luxoft.com/jira/browse/STVITT-122",
+    "DISABLED_Enqueue": "https://adc.luxoft.com/jira/browse/STVITT-119",
+    "DISABLED_metal_compute_complex": "https://adc.luxoft.com/jira/browse/STVITT-124",
+    "DISABLED_Init": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_ReInit": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_Terminate": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_SubmitInput": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_QueryOutput": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_Drain": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_Flush": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_SetOutputDataAllocatorCB": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_GetCaps": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_GetInputCaps": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_GetOutputCaps": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_AllocBuffer": "https://adc.luxoft.com/jira/browse/STVITT-105",
+    "DISABLED_AllocSurface": "https://adc.luxoft.com/jira/browse/STVITT-105"
 }

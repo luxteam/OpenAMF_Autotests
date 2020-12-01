@@ -77,7 +77,7 @@
       </tr>
         {% for group_info in item['Test suites'] %}
           <tr>
-            <td>{{ group_info['name'] }}</td>
+            <td class="table-first-column">{{ group_info['name'] }}</td>
             <td>{{ item['Hostname'] }}</td>
             <td><a href="details_{{ group_info['name'] }}_{{ item['Platform'] }}_{{ item['Configuration'] }}.html">Details</a></td>
             <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.log">Link to .log file</a></td>

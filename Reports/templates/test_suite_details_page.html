@@ -3,6 +3,8 @@
   <head>
     <link rel="stylesheet" href="resources/css/table_style.css">
     <link rel="stylesheet" href="resources/css/button_style.css">
+    <link rel="stylesheet" href="resources/css/search_style.css">
+    <script src="resources/js/search.js"></script>
   </head>
   <body>
 
@@ -45,8 +47,8 @@
     <br>
 
     <br>
-
-    <table class="baseTable">
+    <input type="text" id="search_case" onkeyup="search_case()" placeholder="Search for case">
+    <table id="cases_table" class="baseTable">
       <tr>
         <th>Test Name</th>
         <th>Test Status</th>
@@ -59,7 +61,7 @@
       </tr>
       {% for test_case in test_suite['Test cases'] %}
         <tr>
-          <td>{{ test_case['name'] }}</td>
+          <td class="table-first-column">{{ test_case['name'] }}</td>
           <td>{{ test_case['Result']}}</td>
           <td>
             {% if (test_case['time'] == '0s') %}
@@ -69,11 +71,7 @@
             {% endif %}
           </td>
           <td>
-            {% if (test_case['timestamp'].replace('T', ' ').replace('Z', '') == '1970-01-01 03:00:00') %}
-            -
-            {% else %}
             {{ test_case['timestamp'].replace('T', ' ').replace('Z', '') }}
-            {% endif %}
           </td>
           <td> <button class="popup-button" id="Button{{ loop.index }}">Log</button> </td>
           <td> <button class="popup-button" id="Code{{ loop.index }}">Code</button></td>

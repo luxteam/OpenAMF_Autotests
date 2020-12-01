@@ -115,6 +115,10 @@ def main():
     for stat in statistics:
         for result in stat['testsuites']:
             for test_case in result['testsuite']:
+                # Fix timestamps
+                if (int(test_case['timestamp'].replace('T', ' ').replace('Z', '')[:4]) < 2000):
+                    test_case['timestamp'] = '-'
+
                 # Fetch test cases's code from source files
                 test_case['Code'] = find_code(test_case['name'])
                 if (test_case['Code']):
