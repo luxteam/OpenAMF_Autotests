@@ -78,6 +78,8 @@ def main():
     for result in statistics:
         for res in result['testsuites']:
             res['not_implemented'] = calculateTestSuiteNotImplemented(res['testsuite'])
+            res['failures'] -= res['not_implemented']
+        not_implemented = sum(map(calculateNotImplemented, statistics))
         gpu_stat.append(
             {
             'Platform' : result['platform'],
@@ -85,10 +87,10 @@ def main():
             'Hostname' : result['hostname'],
             'Total' : result['tests'],
             'Passed' : result['tests'] - result['failures'] - result['disabled'] - result['errors'],
-            'Failed' : result['failures'],
+            'Failed' : result['failures'] - not_implemented,
             'Disabled' : result['disabled'],
             'Error' : result['errors'],
-            'Not implemented' : sum(map(calculateNotImplemented, statistics)),
+            'Not implemented' : not_implemented,
             'Time taken': result['time'],
             'Test suites': result['testsuites']
             }
@@ -126,7 +128,7 @@ def main():
                         with open(SKIP_FILE, 'r') as file:
                             skips_reasons = json.load(file)
                             if test_case['name'] in skips_reasons:
-                                test_case['Result'] += ' due to <br><a>' + skips_reasons[test_case['name']] + "</a>"
+                                test_case['Result'] += ' due to <br><a href = %s>%s</a>' % (skips_reasons[test_case['name']], skips_reasons[test_case['name']])
                     except Exception as e:
                         print(e.message)
                 elif not 'failures' in test_case:
