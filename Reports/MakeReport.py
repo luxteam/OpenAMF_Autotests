@@ -19,9 +19,10 @@ def find_code(case_name):
         with open(source_file, 'r', encoding='utf-8') as source_code:
             file_text = source_code.read()
 
-        pattern = "AUG\|(.*?)\|UGA"
+        nested_pattern = r"({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*(?:({[^{}]*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})+?[^{}]*)*?})"
         try:
-            return re.search(r"%s\)\s*{((.|\n)*?(?=}))" % case_name, file_text).group(1)
+            return re.search(r"%s\)\s*%s" % (case_name, nested_pattern), file_text).group(1)
+            # return re.search(r"%s\)\s*{((.|\n)*?(?=}))" % case_name, file_text).group(1)
         except Exception as e:
             pass
 
@@ -125,7 +126,7 @@ def main():
                         with open(SKIP_FILE, 'r') as file:
                             skips_reasons = json.load(file)
                             if test_case['name'] in skips_reasons:
-                                test_case['Result'] += 'due to <br><a>' + skips_reasons[test_case['name']] + "</a>"
+                                test_case['Result'] += ' due to <br><a>' + skips_reasons[test_case['name']] + "</a>"
                     except Exception as e:
                         print(e.message)
                 elif not 'failures' in test_case:
