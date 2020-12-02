@@ -76,12 +76,10 @@ SET(HEADERS
 
 # Local source files here
 SET(SOURCES
-    src/General.cpp
-    src/Complex.cpp
-    src/Implementation.cpp
-    src/OpenCL.cpp
-    src/Metal.cpp
-    src/Autotests.cpp
+    src/AMFCompute.cpp
+    src/AMFSTL.cpp
+    src/Memory.cpp
+    src/MultithreadCompute.cpp
     )
 
 include_directories(../../include)
