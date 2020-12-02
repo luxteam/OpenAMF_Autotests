@@ -2,6 +2,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="resources/css/table_style.css">
+    <link rel="stylesheet" href="resources/css/button_style.css">
   </head>
   <body>
 
@@ -65,8 +66,6 @@
         <th>Test Suite</th>
         <th>Host</th>
         <th>Details</th>
-        <th>Test Log</th>
-        <th>Memory log</th>
         <th>Total</th>
         <th>Passed</th>
         <th>Failed</th>
@@ -74,14 +73,15 @@
         <th>Errors</th>
         <th>Not implemented</th>
         <th>Time taken</th>
+        <th>Test Log</th>
+        <th>Memory log</th>
+        <th>Group's code</th>
       </tr>
         {% for group_info in item['Test suites'] %}
           <tr>
             <td class="table-first-column">{{ group_info['name'] }}</td>
             <td>{{ item['Hostname'] }}</td>
             <td><a href="details_{{ group_info['name'] }}_{{ item['Platform'] }}_{{ item['Configuration'] }}.html">Details</a></td>
-            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.log">Link to .log file</a></td>
-            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.out.log">Link to .out.log file</a></td>
             <td>{{ group_info['tests'] }}</td>
             <td>{{ group_info['tests'] - group_info['failures'] - group_info['disabled'] - group_info['errors'] }}</td>
             <td>{{ group_info['failures'] }}</td>
@@ -95,10 +95,44 @@
               {{ group_info['time'] }}
               {% endif %}
             </td>
+            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.log">Link to .log file</a></td>
+            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.out.log">Link to .out.log file</a></td>
+            <td><button class="popup-button" id="Code{{ loop.index }}">Code</button></td>
           </tr>
+
+          <div id="SourceCode{{ loop.index }}" class="modal">
+            <div class="modal-content">
+              <span class="close" id="CloseCode{{ loop.index }}">&times;</span>
+              <h3>{{ group_info['name'] }} code</h3>
+              <p>{{ group_info['Code'] }}</p>
+            </div>
+          </div>
+
+          <script>
+            var codebtn = document.getElementById("Code{{ loop.index }}");
+            var codespan = document.getElementById("CloseCode{{ loop.index }}");
+
+            codebtn.onclick = function() {
+              document.getElementById("SourceCode{{ loop.index }}").style.display = "block";
+              document.onkeydown = function(evt) {
+                  evt = evt || window.event;
+                  if (evt.keyCode == 27) {
+                    document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+                  }
+              };
+            }
+            codespan.onclick = function() {
+              document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+            }
+            window.onclick = function(event) {
+              if (event.target == document.getElementById("SourceCode{{ loop.index }}")) {
+                document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+              }
+            }
+          </script>
         {% endfor %}
         <tr>
-          <th style colspan="5">Sum</td>
+          <th style colspan="3">Sum</td>
           <th>{{ item['Total'] }}</td>
           <th>{{ item['Passed'] }}</td>
           <th>{{ item['Failed'] }}</td>
@@ -106,6 +140,7 @@
           <th>{{ item['Error'] }}</td>
           <th>{{ item['Not implemented'] }}</td>
           <th>{{ item['Time taken'] }}</td>
+          <th style colspan="3"></td>
         </tr>
     </table>
     <br>

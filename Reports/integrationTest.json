@@ -1,0 +1,137 @@
+{
+  "platform": "test",
+  "hostname": "test",
+  "configuration": "test",
+  "tests": 14,
+  "failures": 0,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2020-12-02T14:42:58Z",
+  "time": "0.914s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AMF_Compute",
+      "tests": 14,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2020-12-02T14:42:58Z",
+      "time": "0.894s",
+      "testsuite": [
+        {
+          "name": "1_InitializateFactory",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:58Z",
+          "time": "0.009s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "2_CreateContext",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:58Z",
+          "time": "0.653s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "3_CreatePrograms",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.008s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "4_InitializeDevice",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.008s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "5_GetComputeFromDeviceAndLoadKernel",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.038s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "6_LoadKernelIntoCompute",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.064s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "7_InitOpenCLInContextWithComputeNativeCommandQueue",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.037s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "8_AllocateBuffers",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.009s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "9_InitializeRandomData",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.01s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "10_ConvertInputFromHostToOpenCL",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.009s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "11_SetShaderArguments",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.009s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "12_LaunchShader",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.01s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "13_MoveResultToHost",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.01s",
+          "classname": "AMF_Compute"
+        },
+        {
+          "name": "14_CompareResultToExpected",
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2020-12-02T14:42:59Z",
+          "time": "0.009s",
+          "classname": "AMF_Compute"
+        }
+      ]
+    }
+  ]
+}
