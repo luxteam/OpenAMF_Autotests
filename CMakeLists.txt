@@ -76,7 +76,7 @@ SET(HEADERS
 
 # Local source files here
 SET(SOURCES
-    src/AMFCompute.cpp
+    src/AMF_Compute.cpp
     src/AMFSTL.cpp
     src/Memory.cpp
     src/MultithreadCompute.cpp
