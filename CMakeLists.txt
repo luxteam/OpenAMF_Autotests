@@ -71,7 +71,7 @@ project(autotests)
 
 # Local header files here ONLY
 SET(HEADERS
-    src/autotests.h
+    src/Autotests.h
    )
 
 # Local source files here
@@ -80,6 +80,7 @@ SET(SOURCES
     src/AMFSTL.cpp
     src/Memory.cpp
     src/MultithreadCompute.cpp
+    src/Autotests.cpp
     )
 
 include_directories(../../include)
