@@ -1,5 +1,5 @@
 #include "autotests.h"
-#include "../../common/Thread.h"
+#include "../../../common/Thread.h"
 
 struct General : testing::Test {
 	AMFFactoryHelper helper;

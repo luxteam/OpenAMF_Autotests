@@ -71,17 +71,17 @@ project(autotests)
 
 # Local header files here ONLY
 SET(HEADERS
-    autotests.h
+    src/autotests.h
    )
 
 # Local source files here
 SET(SOURCES
-    General.cpp
-    Complex.cpp
-    Implementation.cpp
-    OpenCL.cpp
-    Metal.cpp
-    Autotests.cpp
+    src/General.cpp
+    src/Complex.cpp
+    src/Implementation.cpp
+    src/OpenCL.cpp
+    src/Metal.cpp
+    src/Autotests.cpp
     )
 
 include_directories(../../include)

@@ -15,7 +15,7 @@ logging.basicConfig(filename='report_building.log', level=logging.INFO, format='
 logger = logging.getLogger(__name__)
 
 def find_code(case_name):
-    for source_file in glob(os.path.join("..", '*.cpp')):
+    for source_file in glob(os.path.join("../src", '*.cpp')):
         with open(source_file, 'r', encoding='utf-8') as source_code:
             file_text = source_code.read()
 
