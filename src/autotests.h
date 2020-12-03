@@ -1,6 +1,8 @@
 #pragma once
 #ifndef H_UTILITY_AUTOTESTS
 #define H_UTILITY_AUTOTESTS
+#include "../../../common/Thread.h"
+#include "../../../common/AMFSTL.h"
 #include "../../../include/core/Factory.h"
 #include "../../../common/AMFFactory.h"
 #include "../../../include/core/Buffer.h"
