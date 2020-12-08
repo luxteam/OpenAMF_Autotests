@@ -84,7 +84,7 @@ def main():
             {
             'Platform' : result['platform'],
             'Configuration' : result['configuration'],
-            'Hostname' : result['hostname'],
+            'Machine info' : result['machine_info'],
             'Total' : result['tests'],
             'Passed' : result['tests'] - result['failures'] - result['disabled'] - result['errors'],
             'Failed' : result['failures'] - not_implemented,

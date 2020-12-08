@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="resources/css/button_style.css">
     <link rel="stylesheet" href="resources/css/search_style.css">
     <script src="resources/js/search.js"></script>
+    <script src="resources/js/modals.js"></script>
   </head>
   <body>
 
@@ -94,47 +95,8 @@
         </div>
 
         <script>
-            var errbtn = document.getElementById("Button{{ loop.index }}");
-            var span = document.getElementById("Close{{ loop.index }}");
-
-            errbtn.onclick = function() {
-              document.getElementById("Error{{ loop.index }}").style.display = "block";
-              document.onkeydown = function(evt) {
-                  evt = evt || window.event;
-                  if (evt.keyCode == 27) {
-                    document.getElementById("Error{{ loop.index }}").style.display = "none";
-                  }
-              };
-            }
-            span.onclick = function() {
-              document.getElementById("Error{{ loop.index }}").style.display = "none";
-            }
-            window.onclick = function(event) {
-              if (event.target == document.getElementById("Error{{ loop.index }}")) {
-                document.getElementById("Error{{ loop.index }}").style.display = "none";
-              }
-            }
-
-            var codebtn = document.getElementById("Code{{ loop.index }}");
-            var codespan = document.getElementById("CloseCode{{ loop.index }}");
-
-            codebtn.onclick = function() {
-              document.getElementById("SourceCode{{ loop.index }}").style.display = "block";
-              document.onkeydown = function(evt) {
-                  evt = evt || window.event;
-                  if (evt.keyCode == 27) {
-                    document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
-                  }
-              };
-            }
-            codespan.onclick = function() {
-              document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
-            }
-            window.onclick = function(event) {
-              if (event.target == document.getElementById("SourceCode{{ loop.index }}")) {
-                document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
-              }
-            }
+          initModalWindow("Button{{ loop.index }}", "Close{{ loop.index }}", "Error{{ loop.index }}")
+          initModalWindow("Code{{ loop.index }}", "CloseCode{{ loop.index }}", "SourceCode{{ loop.index }}")
         </script>
       {% endfor %}
     </table>
