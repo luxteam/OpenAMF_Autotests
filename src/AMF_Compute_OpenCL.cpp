@@ -56,43 +56,57 @@ struct AMF_Compute_OpenCL : testing::Test {
 };
 
 TEST_F(AMF_Compute_OpenCL, 1_InitializateFactory_OCL) {
-	g_AMFFactory.Init();
-	helper.Init();
+	res = g_AMFFactory.Init();
+	EXPECT_EQ(res, AMF_OK);
+	res = helper.Init();
+	EXPECT_EQ(res, AMF_OK);
 	factory = helper.GetFactory();
 }
 
 TEST_F(AMF_Compute_OpenCL, 2_CreateContext_OCL) {
-	factory->CreateContext(&context);
-	context->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-	context->GetOpenCLComputeFactory(&oclComputeFactory);
+	res = factory->CreateContext(&context);
+	EXPECT_EQ(res, AMF_OK);
+	res = context->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+	EXPECT_EQ(res, AMF_OK);
+	res = context->GetOpenCLComputeFactory(&oclComputeFactory);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 3_CreatePrograms_OCL) {
-	factory->GetPrograms(&pPrograms);
-	pPrograms->RegisterKernelSource(&kernel, L"kernelIDName", "multiplication", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	res = factory->GetPrograms(&pPrograms);
+	EXPECT_EQ(res, AMF_OK);
+	res = pPrograms->RegisterKernelSource(&kernel, L"kernelIDName", "multiplication", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 4_InitializeDevice_OCL) {
-	oclComputeFactory->GetDeviceAt(0, &pComputeDevice);
+	res = oclComputeFactory->GetDeviceAt(0, &pComputeDevice);
+	EXPECT_EQ(res, AMF_OK);
 	pComputeDevice->GetNativeContext();
 }
 
 TEST_F(AMF_Compute_OpenCL, 5_GetComputeFromDevice_OCL) {
-	pComputeDevice->CreateCompute(nullptr, &pCompute);
+	res = pComputeDevice->CreateCompute(nullptr, &pCompute);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 6_LoadKernelIntoCompute_OCL) {
-	pCompute->GetKernel(kernel, &pKernel);
+	res = pCompute->GetKernel(kernel, &pKernel);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 7_InitOpenCLInContextWithComputeNativeCommandQueue_OCL) {
-	context->InitOpenCL(pCompute->GetNativeCommandQueue());
+	res = context->InitOpenCL(pCompute->GetNativeCommandQueue());
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 8_AllocateBuffers_OCL) {
-	context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input);
-	context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input2);
-	context->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &output);
+	res = context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input);
+	EXPECT_EQ(res, AMF_OK);
+	res = context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input2);
+	EXPECT_EQ(res, AMF_OK);
+	res = context->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &output);
+	EXPECT_EQ(res, AMF_OK);
 	inputData = static_cast<float*>(input->GetNative());
 	inputData2 = static_cast<float*>(input2->GetNative());
 }
@@ -107,25 +121,35 @@ TEST_F(AMF_Compute_OpenCL, 9_InitializeRandomData_OCL) {
 }
 
 TEST_F(AMF_Compute_OpenCL, 10_ConvertInputFromHostToOpenCL_OCL) {
-	input->Convert(AMF_MEMORY_OPENCL);
+	res = input->Convert(AMF_MEMORY_OPENCL);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 11_SetShaderArguments_OCL) {
-	pKernel->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
-	pKernel->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
-	pKernel->SetArgBuffer(2, input2, AMF_ARGUMENT_ACCESS_READ);
-	pKernel->SetArgInt32(3, 1024);
+	res = pKernel->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
+	EXPECT_EQ(res, AMF_OK);
+	res = pKernel->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
+	EXPECT_EQ(res, AMF_OK);
+	res = pKernel->SetArgBuffer(2, input2, AMF_ARGUMENT_ACCESS_READ);
+	EXPECT_EQ(res, AMF_OK);
+	res = pKernel->SetArgInt32(3, 1024);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 12_LaunchShader_OCL) {
-	pKernel->GetCompileWorkgroupSize(sizeLocal);
-	pKernel->Enqueue(1, offset, sizeGlobal, NULL);
-	pCompute->FlushQueue();
-	pCompute->FinishQueue();
+	res = pKernel->GetCompileWorkgroupSize(sizeLocal);
+	EXPECT_EQ(res, AMF_OK);
+	res = pKernel->Enqueue(1, offset, sizeGlobal, NULL);
+	EXPECT_EQ(res, AMF_OK);
+	res = pCompute->FlushQueue();
+	EXPECT_EQ(res, AMF_OK);
+	res = pCompute->FinishQueue();
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 13_MoveResultToHost_OCL) {
-	output->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
+	res = output->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_OpenCL, 14_CompareResultToExpected_OCL) {
