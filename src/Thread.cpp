@@ -127,9 +127,30 @@ void eventTest() {
 	x *= 2;
 }
 
+void printThread2() {
+	for (int i = 0; i < 100; i++)
+		std::cout << "thread function Executing" << std::endl;
+}
+
+int i = 0;
+
+void makeACallFromPhoneBooth()
+{
+	amf_wait_for_mutex(mutex2, 20);
+	std::cout << i << " Hello Wife" << std::endl;
+	i++;
+	amf_release_mutex(mutex2);
+}
+
 TEST_F(Thread, recursive_mutex) {
-	amf_wait_for_mutex("\\global1", 30);
-	amf_wait_for_mutex("\\global1", 30);
+	std::thread man1(makeACallFromPhoneBooth);
+	std::thread man2(makeACallFromPhoneBooth);
+	std::thread man3(makeACallFromPhoneBooth);
+
+	man1.join();
+	man2.join();
+	man3.join();
+	EXPECT_FALSE(true);
 }
 
 TEST_F(Thread, amf_set_event) {
