@@ -38,11 +38,14 @@ TEST_F(AMF_Trace, AMFTrace_SetPath) {
 
 TEST_F(AMF_Trace, DISABLED_AMFTrace_GetPath) {
 	AMFTrace* trace;
-	factory->GetTrace(&trace);
+	res = factory->GetTrace(&trace);
+	EXPECT_EQ(res, AMF_OK);
 	res = trace->SetPath(L"test");
+	EXPECT_EQ(res, AMF_OK);
 	amf_size* size;
 	*size = (amf_size)30;
 	wchar_t* str = new wchar_t[1000];
 	res = trace->GetPath(str, size);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(str, L"test");
 }

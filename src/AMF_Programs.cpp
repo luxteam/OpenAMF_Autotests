@@ -31,7 +31,8 @@ struct AMF_Programs : testing::Test {
 
 TEST_F(AMF_Programs, AMFPrograms_RegisterKernelSource) {
 	AMFPrograms* program;
-	factory->GetPrograms(&program);
+	res = factory->GetPrograms(&program);
+	EXPECT_EQ(res, AMF_OK);
 	AMF_KERNEL_ID kernel = 0;
 	const char* kernel_src = "\n" \
 		"__kernel void square2( __global float* input, __global float* output, \n" \
@@ -40,22 +41,25 @@ TEST_F(AMF_Programs, AMFPrograms_RegisterKernelSource) {
 		" if(i < count) \n" \
 		" output[i] = input[i] * input[i]; \n" \
 		"}                     \n";
-	program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	res = program->RegisterKernelSource(&kernel, L"kernelIDName", "square2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_FALSE(kernel);
 }
 
 // TODO: Add test files and finish test
 TEST_F(AMF_Programs, AMFPrograms_RegisterKernelSourceFile) {
 	AMFPrograms* program;
-	factory->GetPrograms(&program);
+	res = factory->GetPrograms(&program);
+	EXPECT_EQ(res, AMF_OK);
 	AMF_KERNEL_ID kernel = 0;
-	EXPECT_NE(program->RegisterKernelSourceFile(&kernel, L"kenelIDname", "square2", L"test_shader.cl", NULL), AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(program->RegisterKernelSourceFile(&kernel, L"kenelIDname", "square2", L"test_shader.cl", NULL), AMF_OK);
 }
 
 // TODO: Add a coresponding binary and finish test
 TEST_F(AMF_Programs, AMFPrograms_RegisterKernelBinary) {
 	AMFPrograms* program;
-	factory->GetPrograms(&program);
+	res = factory->GetPrograms(&program);
+	EXPECT_EQ(res, AMF_OK);
 	AMF_KERNEL_ID kernel = 0;
 	EXPECT_NE(program->RegisterKernelBinary(&kernel, L"kenelIDname", "square2", NULL, NULL, NULL), AMF_NOT_IMPLEMENTED);
 }

@@ -39,19 +39,22 @@ struct AMF_Data : testing::Test {
 
 TEST_F(AMF_Data, getExpectedDataBufferType) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(buffer->GetDataType(), AMF_DATA_BUFFER);
 }
 
 TEST_F(AMF_Data, getExpectedDataSurfaceType) {
 	AMFSurface* surface;
-	context1->AllocSurface(AMF_MEMORY_DX9, AMF_SURFACE_NV12, 1024 * sizeof(float), 1024 * sizeof(float), &surface);
+	res = context1->AllocSurface(AMF_MEMORY_DX9, AMF_SURFACE_NV12, 1024 * sizeof(float), 1024 * sizeof(float), &surface);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(surface->GetDataType(), AMF_DATA_SURFACE);
 }
 
 TEST_F(AMF_Data, getExpectedDataAudioBufferType) {
 	AMFAudioBuffer* aubuf;
-	context1->AllocAudioBuffer(AMF_MEMORY_HOST, AMFAF_S32, 1024 * sizeof(amf_int32), 1024, 16, &aubuf);
+	res = context1->AllocAudioBuffer(AMF_MEMORY_HOST, AMFAF_S32, 1024 * sizeof(amf_int32), 1024, 16, &aubuf);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(aubuf->GetDataType(), AMF_DATA_AUDIO_BUFFER);
 }
 
@@ -61,82 +64,94 @@ TEST_F(AMF_Data, getExpectedDataAudioBufferType) {
 
 TEST_F(AMF_Data, getExpectedMemoryHostType) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(buffer->GetMemoryType(), AMF_MEMORY_HOST);
 }
 
 TEST_F(AMF_Data, memoryHostBlockDuplicate) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	res = buffer->Duplicate(AMF_MEMORY_HOST, (AMFData**)&buffer_res);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 
 TEST_F(AMF_Data, DISABLED_convertMemoryHostToMemoryOpencl) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	res = buffer->Convert(AMF_MEMORY_OPENCL);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_NE(buffer->GetDataType(), AMF_MEMORY_OPENCL);
 }
 
 TEST_F(AMF_Data, interopMemoryHostToMemoryOpencl) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	res = buffer->Interop(AMF_MEMORY_OPENCL);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
 TEST_F(AMF_Data, checkDataObjectIsReusable) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(buffer->IsReusable(), true);
 }
 
 TEST_F(AMF_Data, DISABLED_checkDataObjectIsNotReusable) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_DX11, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_DX11, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(buffer->IsReusable(), false);
 }
 
 TEST_F(AMF_Data, setPtsDontCrush) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_NO_THROW(buffer->SetPts(3000));
 }
 
 TEST_F(AMF_Data, getPtsDontCrush) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_NO_THROW(buffer->GetPts());
 }
 
 TEST_F(AMF_Data, getPtsWithSetPtsChecking) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	buffer->SetPts(3333);
 	EXPECT_EQ(buffer->GetPts(), 3333);
 }
 
 TEST_F(AMF_Data, setDurationDontCrush) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_NO_THROW(buffer->SetDuration(3000));
 }
 
 TEST_F(AMF_Data, getDurationDontCrush) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_NO_THROW(buffer->GetDuration());
 }
 
 TEST_F(AMF_Data, getDurationWithSetDurationChecking) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(res, AMF_OK);
 	buffer->SetDuration(3333);
 	EXPECT_EQ(buffer->GetDuration(), 3333);
 }
@@ -173,41 +188,41 @@ struct Memory : testing::Test {
 
 TEST_F(Memory, AMFFactory_CreateContext) {
 	res = factory->CreateContext(&context1);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(context1);
 }
 
 TEST_F(Memory, DISABLED_AMFFactory_CreateComponent) {
 	AMFComponentPtr component;
 	res = factory->CreateComponent(context1, 0, &component);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(component);
 }
 
 TEST_F(Memory, AMFFactory_SetCacheFolder) {
 	res = factory->SetCacheFolder(L"test");
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(factory->GetCacheFolder(), L"test");
 }
 
 TEST_F(Memory, AMFFactory_GetDebug) {
 	AMFDebug* debug;
 	res = factory->GetDebug(&debug);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(debug);
 }
 
 TEST_F(Memory, AMFFactory_GetTrace) {
 	AMFTrace* trace;
 	res = factory->GetTrace(&trace);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(trace);
 }
 
 TEST_F(Memory, AMFFactory_GetPrograms) {
 	AMFPrograms* programs;
 	res = factory->GetPrograms(&programs);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(programs);
 }
 
@@ -221,7 +236,8 @@ TEST_F(Memory, AMFTrace_SetPath) {
 
 TEST_F(Memory, DISABLED_AMFTrace_GetPath) {
 	AMFTrace* trace;
-	factory->GetTrace(&trace);
+	res = factory->GetTrace(&trace);
+	EXPECT_EQ(res, AMF_OK);
 	res = trace->SetPath(L"test");
 	amf_size* size;
 	*size = (amf_size)30;
@@ -233,166 +249,198 @@ TEST_F(Memory, DISABLED_AMFTrace_GetPath) {
 TEST_F(Memory, AMFVariantStruct_AMFVariantInit) {
 	AMFVariantStruct variant;
 	res = AMFVariantInit(&variant);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantClear) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
-	AMFVariantAssignString(&variant, "ТеStパーティーへ行かないか");
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
+	res = AMFVariantAssignString(&variant, "ТеStパーティーへ行かないか");
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantClear(&variant);
 	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignBool) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantAssignBool(&variant, true);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetBool(&variant), true);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignInt64) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantAssignInt64(&variant, (amf_int64)4);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetInt64(&variant), (amf_int64)4);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignDouble) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantAssignDouble(&variant, (amf_double)2.74);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetDouble(&variant), (amf_double)2.74);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignString) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantAssignString(&variant, "ТеStパーティーへ行かないか");
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(*AMFVariantGetString(&variant), *"ТеStパーティーへ行かないか");
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignWString) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantAssignWString(&variant, L"ТеStパーティーへ行かないか");
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(*AMFVariantGetWString(&variant), *L"ТеStパーティーへ行かないか");
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignInterface) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	AMFInterface* inter = NULL;
 	res = AMFVariantAssignInterface(&variant, inter);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignRect) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	AMFRect* rect = new AMFRect;
 	res = AMFVariantAssignRect(&variant, rect);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetRect(&variant), *rect);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignSize) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	AMFSize* size = new AMFSize;
 	res = AMFVariantAssignSize(&variant, size);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetSize(&variant), *size);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignPoint) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	AMFPoint* point = new AMFPoint;
 	res = AMFVariantAssignPoint(&variant, point);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetPoint(&variant), *point);
 }
 
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignRatio) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	AMFRatio* ratio = new AMFRatio;
 	res = AMFVariantAssignRatio(&variant, ratio);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetRatio(&variant), *ratio);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantAssignColor) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
 	AMFColor* color = new AMFColor;
 	color->r = 1; color->g = 0.5; color->b = 0; color->a = 0;
 	res = AMFVariantAssignColor(&variant, color);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetColor(&variant), *color);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantCompare) {
 	AMFVariantStruct variant1, variant2, variant3;
-	AMFVariantInit(&variant1); AMFVariantInit(&variant2);
+	res = AMFVariantInit(&variant1);
+	EXPECT_EQ(res, AMF_OK);
+	res = AMFVariantInit(&variant2);
+	EXPECT_EQ(res, AMF_OK);
 	AMFColor* color = new AMFColor;
 	AMFRatio* ratio = new AMFRatio;
-	AMFVariantAssignColor(&variant1, color);
-	AMFVariantAssignColor(&variant2, color);
-	AMFVariantAssignRatio(&variant3, ratio);
+	res = AMFVariantAssignColor(&variant1, color);
+	EXPECT_EQ(res, AMF_OK);
+	res = AMFVariantAssignColor(&variant2, color);
+	EXPECT_EQ(res, AMF_OK);
+	res = AMFVariantAssignRatio(&variant3, ratio);
+	EXPECT_EQ(res, AMF_OK);
 	amf_bool equal;
 	res = AMFVariantCompare(&variant1, &variant2, &equal);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(equal);
 	res = AMFVariantCompare(&variant1, &variant3, &equal);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_FALSE(equal);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantCopy) {
 	AMFVariantStruct variant1, variant2;
-	AMFVariantInit(&variant1); AMFVariantInit(&variant2);
+	res = AMFVariantInit(&variant1);
+	EXPECT_EQ(res, AMF_OK);
+	res = AMFVariantInit(&variant2);
+	EXPECT_EQ(res, AMF_OK);
 	AMFColor* color = new AMFColor;
 	color->r = 1; color->g = 0.5; color->b = 0; color->a = 0;
-	AMFVariantAssignColor(&variant2, color);
+	res = AMFVariantAssignColor(&variant2, color);
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantCopy(&variant1, &variant2);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(Memory, AMFVariantStruct_AMFVariantChangeType) {
 	AMFVariantStruct variant1, variant2;
-	AMFVariantInit(&variant1);
+	res = AMFVariantInit(&variant1);
+	EXPECT_EQ(res, AMF_OK);
 	amf_int64 in = 1;
-	AMFVariantAssignInt64(&variant1, in);
+	res = AMFVariantAssignInt64(&variant1, in);
+	EXPECT_EQ(res, AMF_OK);
 	amf_double fl = 2.2;
-	AMFVariantAssignDouble(&variant2, fl);
+	res = AMFVariantAssignDouble(&variant2, fl);
+	EXPECT_EQ(res, AMF_OK);
 	res = AMFVariantChangeType(&variant2, &variant1, AMF_VARIANT_DOUBLE);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(AMFVariantGetType(&variant1), AMF_VARIANT_DOUBLE);
 	EXPECT_EQ(AMFVariantGetType(&variant2), AMF_VARIANT_DOUBLE);
 }
 
 TEST_F(Memory, AMFPropertyStorage_SetProperty) {
 	AMFVariantStruct variant;
-	AMFVariantInit(&variant);
-	AMFVariantAssignDouble(&variant, (amf_double)2.74);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
+	res = AMFVariantAssignDouble(&variant, (amf_double)2.74);
+	EXPECT_EQ(res, AMF_OK);
 	res = context1->SetProperty(L"TestProperty", variant);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 }
 
 TEST_F(Memory, AMFPropertyStorage_GetProperty) {
 	AMFVariantStruct variant, res_variant;
-	AMFVariantInit(&variant);
-	AMFVariantAssignDouble(&variant, (amf_double)2.74);
-	context1->SetProperty(L"TestProperty", variant);
+	res = AMFVariantInit(&variant);
+	EXPECT_EQ(res, AMF_OK);
+	res = AMFVariantAssignDouble(&variant, (amf_double)2.74);
+	EXPECT_EQ(res, AMF_OK);
+	res = context1->SetProperty(L"TestProperty", variant);
+	EXPECT_EQ(res, AMF_OK);
 	res = context1->GetProperty(L"TestProperty", &res_variant);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_EQ(res_variant.doubleValue, 2.74);
 	res = context1->GetProperty(L"NotAProperty", &res_variant);
 	EXPECT_EQ(res, AMF_NOT_FOUND);

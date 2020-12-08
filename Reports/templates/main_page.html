@@ -59,7 +59,7 @@
     <br>
 
     {% for item in gpu_stat %}
-    <div class="gpu-header"><b>{{ item['Platform'] | lower() }} ({{ item['Configuration'] | replace("_", " ") | lower() }})</b></div>
+    <div class="gpu-header"><b>{{ item['Platform'] | lower() | replace("_", " ") | replace("-", " ") }} ({{ item['Configuration'] | replace("_", " ") | lower() }})</b></div>
     <br>
     <table class="baseTable">
       <tr>

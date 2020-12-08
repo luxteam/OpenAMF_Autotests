@@ -1,8 +1,8 @@
 #include "autotests.h"
 #include <thread>
 
-static AMFMutex mutex1 = amf_create_mutex(false, L"\\global1");
-static amf_handle mutex2 = amf_create_mutex(false, L"\\global2");
+static AMFMutex mutex1 = amf_create_mutex(false, L"/test1");
+static amf_handle mutex2 = amf_create_mutex(false, L"/test2");
 static amf_handle crit_section = amf_create_critical_section();
 static amf_handle event = amf_create_event(false, true, L"test_event");
 static amf_long x = 5;
@@ -23,6 +23,9 @@ struct Thread : testing::Test {
 
 	Thread() {
 		startTime = initiateTestLog();
+		EXPECT_NE(mutex2, (amf_handle)NULL);
+		EXPECT_NE(crit_section, (amf_handle)NULL);
+		EXPECT_NE(event, (amf_handle)NULL);
 	}
 
 	~Thread() {
@@ -136,6 +139,7 @@ int i = 0;
 
 void makeACallFromPhoneBooth()
 {
+	amf_wait_for_mutex(mutex2, 20);
 	amf_wait_for_mutex(mutex2, 20);
 	std::cout << i << " Hello Wife" << std::endl;
 	i++;

@@ -51,20 +51,20 @@ TEST_F(AMF_Factory, AMFFactory_SetCacheFolder) {
 TEST_F(AMF_Factory, AMFFactory_GetDebug) {
 	AMFDebug* debug;
 	res = factory->GetDebug(&debug);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(debug);
 }
 
 TEST_F(AMF_Factory, AMFFactory_GetTrace) {
 	AMFTrace* trace;
 	res = factory->GetTrace(&trace);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(trace);
 }
 
 TEST_F(AMF_Factory, AMFFactory_GetPrograms) {
 	AMFPrograms* programs;
 	res = factory->GetPrograms(&programs);
-	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(res, AMF_OK);
 	EXPECT_TRUE(programs);
 }
