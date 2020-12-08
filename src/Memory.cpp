@@ -1,7 +1,6 @@
 ﻿#include "autotests.h"
 
-
-struct AMF_Data : testing::Test {
+struct AMF_Memory : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
 	AMFFactory* factory;
@@ -9,14 +8,14 @@ struct AMF_Data : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("AMF_Data");
+		initiateTestSuiteLog("AMF_Memory");
 	}
 
 	static void TearDownTestCase() {
 		terminateTestSuiteLog();
 	}
 
-	AMF_Data() {
+	AMF_Memory() {
 		helper.Init();
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
@@ -24,48 +23,56 @@ struct AMF_Data : testing::Test {
 		startTime = initiateTestLog();
 	}
 
-	~AMF_Data() {
+	~AMF_Memory() {
 		context1.Release();
 		terminateTestLog(startTime);
 	}
 };
 
 
-/*TEST_F(AMF_Data, getDataTypeFromMemoryUnknown) {
+TEST_F(AMF_Memory, DISABLED_getDataTypeFromMemoryUnknown) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_UNKNOWN, 1024 * sizeof(float), &buffer);
 	EXPECT_ANY_THROW(buffer->GetDataType());
-}*/
+}
 
-TEST_F(AMF_Data, getExpectedDataBufferType) {
+TEST_F(AMF_Memory, getExpectedDataBufferType) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	EXPECT_EQ(buffer->GetDataType(), AMF_DATA_BUFFER);
 }
 
-TEST_F(AMF_Data, getExpectedDataSurfaceType) {
+TEST_F(AMF_Memory, getExpectedDataSurfaceType) {
 	AMFSurface* surface;
-	context1->AllocSurface(AMF_MEMORY_DX9, AMF_SURFACE_NV12, 1024 * sizeof(float), 1024 * sizeof(float), &surface);
+	context1->AllocSurface(AMF_MEMORY_OPENCL, AMF_SURFACE_NV12, 1024 * sizeof(float), 1024 * sizeof(float), &surface);
 	EXPECT_EQ(surface->GetDataType(), AMF_DATA_SURFACE);
 }
 
-TEST_F(AMF_Data, getExpectedDataAudioBufferType) {
+TEST_F(AMF_Memory, getExpectedDataAudioBufferType) {
 	AMFAudioBuffer* aubuf;
-	context1->AllocAudioBuffer(AMF_MEMORY_HOST, AMFAF_S32, 1024 * sizeof(amf_int32), 1024, 16, &aubuf);
+	context1->AllocAudioBuffer(AMF_MEMORY_HOST, AMFAF_S32, 1024 * sizeof(float), 1024, 16, &aubuf);
 	EXPECT_EQ(aubuf->GetDataType(), AMF_DATA_AUDIO_BUFFER);
 }
 
-/*TEST_F(AMF_Data, getExpectedDataUserType) {
-	EXPECT_EQ(->GetDataType(), AMF_DATA_USER);
+/*TEST_F(AMF_Memory, getExpectedDataUserType) {
+*
+	EXPECT_EQ(->GetDataType(), AMF_Memory_USER);
 }*/
 
-TEST_F(AMF_Data, getExpectedMemoryHostType) {
+TEST_F(AMF_Memory, getExpectedMemoryHostType) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	EXPECT_EQ(buffer->GetMemoryType(), AMF_MEMORY_HOST);
 }
 
-TEST_F(AMF_Data, memoryHostBlockDuplicate) {
+TEST_F(AMF_Memory, DISABLED_getExpectedMemoryTypeOpenCL){
+	AMFBuffer* buffer;
+	context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(buffer->GetMemoryType(), AMF_MEMORY_OPENCL);
+}
+
+
+TEST_F(AMF_Memory, memoryHostBlockDuplicate) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
@@ -74,67 +81,75 @@ TEST_F(AMF_Data, memoryHostBlockDuplicate) {
 }
 
 
-TEST_F(AMF_Data, DISABLED_convertMemoryHostToMemoryOpencl) {
+TEST_F(AMF_Memory, DISABLED_convertMemoryHostToMemoryOpencl) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	res = buffer->Convert(AMF_MEMORY_OPENCL);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
-	EXPECT_NE(buffer->GetDataType(), AMF_MEMORY_OPENCL);
+	EXPECT_EQ(buffer->GetDataType(), AMF_MEMORY_OPENCL);
 }
 
-TEST_F(AMF_Data, interopMemoryHostToMemoryOpencl) {
+TEST_F(AMF_Memory, interopMemoryHostToMemoryOpencl) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	res = buffer->Interop(AMF_MEMORY_OPENCL);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
+	EXPECT_EQ(buffer->GetDataType(), AMF_MEMORY_HOST);
 }
 
-TEST_F(AMF_Data, checkDataObjectIsReusable) {
+TEST_F(AMF_Memory, checkDataObjectIsReusable) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	EXPECT_EQ(buffer->IsReusable(), true);
 }
 
-TEST_F(AMF_Data, DISABLED_checkDataObjectIsNotReusable) {
+TEST_F(AMF_Memory, DISABLED_checkDataObjectIsNotReusable) {
 	AMFBuffer* buffer;
-	context1->AllocBuffer(AMF_MEMORY_DX11, 1024 * sizeof(float), &buffer);
+	AMFData* data;
+	context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &buffer);
+	EXPECT_EQ(data->IsReusable(), false);
+}
+
+TEST_F(AMF_Memory, DISABLED_checkDataObjectIsReusableOpenCL) {
+	AMFBuffer* buffer;
+	context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &buffer);
 	EXPECT_EQ(buffer->IsReusable(), false);
 }
 
-TEST_F(AMF_Data, setPtsDontCrush) {
+TEST_F(AMF_Memory, setPtsDontCrush) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	EXPECT_NO_THROW(buffer->SetPts(3000));
 }
 
-TEST_F(AMF_Data, getPtsDontCrush) {
+TEST_F(AMF_Memory, getPtsDontCrush) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	EXPECT_NO_THROW(buffer->GetPts());
 }
 
-TEST_F(AMF_Data, getPtsWithSetPtsChecking) {
+TEST_F(AMF_Memory, getPtsWithSetPtsChecking) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	buffer->SetPts(3333);
 	EXPECT_EQ(buffer->GetPts(), 3333);
 }
 
-TEST_F(AMF_Data, setDurationDontCrush) {
+TEST_F(AMF_Memory, setDurationDontCrush) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	EXPECT_NO_THROW(buffer->SetDuration(3000));
 }
 
-TEST_F(AMF_Data, getDurationDontCrush) {
+TEST_F(AMF_Memory, getDurationDontCrush) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	EXPECT_NO_THROW(buffer->GetDuration());
 }
 
-TEST_F(AMF_Data, getDurationWithSetDurationChecking) {
+TEST_F(AMF_Memory, getDurationWithSetDurationChecking) {
 	AMFBuffer* buffer;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
 	buffer->SetDuration(3333);
@@ -142,7 +157,7 @@ TEST_F(AMF_Data, getDurationWithSetDurationChecking) {
 }
 
 
-struct Memory : testing::Test {
+struct Memory2 : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
 	AMFFactory* factory;
@@ -150,14 +165,14 @@ struct Memory : testing::Test {
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
-		initiateTestSuiteLog("Memory");
+		initiateTestSuiteLog("Memory2");
 	}
 
 	static void TearDownTestCase() {
 		terminateTestSuiteLog();
 	}
 
-	Memory() {
+	Memory2() {
 		helper.Init();
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
@@ -165,46 +180,46 @@ struct Memory : testing::Test {
 		startTime = initiateTestLog();
 	}
 
-	~Memory() {
+	~Memory2() {
 		context1.Release();
 		terminateTestLog(startTime);
 	}
 };
 
-TEST_F(Memory, AMFFactory_CreateContext) {
+TEST_F(Memory2, AMFFactory_CreateContext) {
 	res = factory->CreateContext(&context1);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 	EXPECT_TRUE(context1);
 }
 
-TEST_F(Memory, DISABLED_AMFFactory_CreateComponent) {
+TEST_F(Memory2, DISABLED_AMFFactory_CreateComponent) {
 	AMFComponentPtr component;
 	res = factory->CreateComponent(context1, 0, &component);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 	EXPECT_TRUE(component);
 }
 
-TEST_F(Memory, AMFFactory_SetCacheFolder) {
+TEST_F(Memory2, AMFFactory_SetCacheFolder) {
 	res = factory->SetCacheFolder(L"test");
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 	EXPECT_EQ(factory->GetCacheFolder(), L"test");
 }
 
-TEST_F(Memory, AMFFactory_GetDebug) {
+TEST_F(Memory2, AMFFactory_GetDebug) {
 	AMFDebug* debug;
 	res = factory->GetDebug(&debug);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 	EXPECT_TRUE(debug);
 }
 
-TEST_F(Memory, AMFFactory_GetTrace) {
+TEST_F(Memory2, AMFFactory_GetTrace) {
 	AMFTrace* trace;
 	res = factory->GetTrace(&trace);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 	EXPECT_TRUE(trace);
 }
 
-TEST_F(Memory, AMFFactory_GetPrograms) {
+TEST_F(Memory2, AMFFactory_GetPrograms) {
 	AMFPrograms* programs;
 	res = factory->GetPrograms(&programs);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
@@ -212,14 +227,14 @@ TEST_F(Memory, AMFFactory_GetPrograms) {
 }
 
 
-TEST_F(Memory, AMFTrace_SetPath) {
+TEST_F(Memory2, AMFTrace_SetPath) {
 	AMFTrace* trace;
 	factory->GetTrace(&trace);
 	res = trace->SetPath(L"test");
 	EXPECT_EQ(res, AMF_OK);
 }
 
-TEST_F(Memory, DISABLED_AMFTrace_GetPath) {
+TEST_F(Memory2, DISABLED_AMFTrace_GetPath) {
 	AMFTrace* trace;
 	factory->GetTrace(&trace);
 	res = trace->SetPath(L"test");
@@ -230,13 +245,13 @@ TEST_F(Memory, DISABLED_AMFTrace_GetPath) {
 	EXPECT_EQ(str, L"test");
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantInit) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantInit) {
 	AMFVariantStruct variant;
 	res = AMFVariantInit(&variant);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantClear) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantClear) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignString(&variant, "ТеStパーティーへ行かないか");
@@ -244,7 +259,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantClear) {
 	EXPECT_EQ(res, AMF_OK);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignBool) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignBool) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	res = AMFVariantAssignBool(&variant, true);
@@ -252,7 +267,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignBool) {
 	EXPECT_EQ(AMFVariantGetBool(&variant), true);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignInt64) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignInt64) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	res = AMFVariantAssignInt64(&variant, (amf_int64)4);
@@ -260,7 +275,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignInt64) {
 	EXPECT_EQ(AMFVariantGetInt64(&variant), (amf_int64)4);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignDouble) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignDouble) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	res = AMFVariantAssignDouble(&variant, (amf_double)2.74);
@@ -268,7 +283,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignDouble) {
 	EXPECT_EQ(AMFVariantGetDouble(&variant), (amf_double)2.74);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignString) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignString) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	res = AMFVariantAssignString(&variant, "ТеStパーティーへ行かないか");
@@ -276,7 +291,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignString) {
 	EXPECT_EQ(*AMFVariantGetString(&variant), *"ТеStパーティーへ行かないか");
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignWString) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignWString) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	res = AMFVariantAssignWString(&variant, L"ТеStパーティーへ行かないか");
@@ -284,7 +299,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignWString) {
 	EXPECT_EQ(*AMFVariantGetWString(&variant), *L"ТеStパーティーへ行かないか");
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignInterface) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignInterface) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFInterface* inter = NULL;
@@ -292,7 +307,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignInterface) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignRect) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignRect) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFRect* rect = new AMFRect;
@@ -301,7 +316,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignRect) {
 	EXPECT_EQ(AMFVariantGetRect(&variant), *rect);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignSize) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignSize) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFSize* size = new AMFSize;
@@ -310,7 +325,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignSize) {
 	EXPECT_EQ(AMFVariantGetSize(&variant), *size);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignPoint) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignPoint) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFPoint* point = new AMFPoint;
@@ -320,7 +335,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignPoint) {
 }
 
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignRatio) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignRatio) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFRatio* ratio = new AMFRatio;
@@ -329,7 +344,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignRatio) {
 	EXPECT_EQ(AMFVariantGetRatio(&variant), *ratio);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantAssignColor) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantAssignColor) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFColor* color = new AMFColor;
@@ -339,7 +354,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantAssignColor) {
 	EXPECT_EQ(AMFVariantGetColor(&variant), *color);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantCompare) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantCompare) {
 	AMFVariantStruct variant1, variant2, variant3;
 	AMFVariantInit(&variant1); AMFVariantInit(&variant2);
 	AMFColor* color = new AMFColor;
@@ -356,7 +371,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantCompare) {
 	EXPECT_FALSE(equal);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantCopy) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantCopy) {
 	AMFVariantStruct variant1, variant2;
 	AMFVariantInit(&variant1); AMFVariantInit(&variant2);
 	AMFColor* color = new AMFColor;
@@ -366,7 +381,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantCopy) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Memory, AMFVariantStruct_AMFVariantChangeType) {
+TEST_F(Memory2, AMFVariantStruct_AMFVariantChangeType) {
 	AMFVariantStruct variant1, variant2;
 	AMFVariantInit(&variant1);
 	amf_int64 in = 1;
@@ -378,7 +393,7 @@ TEST_F(Memory, AMFVariantStruct_AMFVariantChangeType) {
 	EXPECT_EQ(AMFVariantGetType(&variant2), AMF_VARIANT_DOUBLE);
 }
 
-TEST_F(Memory, AMFPropertyStorage_SetProperty) {
+TEST_F(Memory2, AMFPropertyStorage_SetProperty) {
 	AMFVariantStruct variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignDouble(&variant, (amf_double)2.74);
@@ -386,7 +401,7 @@ TEST_F(Memory, AMFPropertyStorage_SetProperty) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Memory, AMFPropertyStorage_GetProperty) {
+TEST_F(Memory2, AMFPropertyStorage_GetProperty) {
 	AMFVariantStruct variant, res_variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignDouble(&variant, (amf_double)2.74);
@@ -399,7 +414,7 @@ TEST_F(Memory, AMFPropertyStorage_GetProperty) {
 }
 
 
-TEST_F(Memory, AMFPropertyStorage_GetPropertyString) {
+TEST_F(Memory2, AMFPropertyStorage_GetPropertyString) {
 	AMFVariantStruct variant, res_variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignInt64(&variant, (amf_int64)2);
@@ -410,7 +425,7 @@ TEST_F(Memory, AMFPropertyStorage_GetPropertyString) {
 	EXPECT_STREQ(res_str, "2");
 }
 
-TEST_F(Memory, AMFPropertyStorage_GetPropertyWString) {
+TEST_F(Memory2, AMFPropertyStorage_GetPropertyWString) {
 	AMFVariantStruct variant, res_variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignInt64(&variant, (amf_int64)2);
@@ -422,7 +437,7 @@ TEST_F(Memory, AMFPropertyStorage_GetPropertyWString) {
 }
 
 // TODO: Ask how to use this function properly
-TEST_F(Memory, DISABLED_AMFPropertyStorage_GetPropertyAt) {
+TEST_F(Memory2, DISABLED_AMFPropertyStorage_GetPropertyAt) {
 	AMFVariantStruct variant, res_variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignDouble(&variant, (amf_double)2.74);
@@ -432,7 +447,7 @@ TEST_F(Memory, DISABLED_AMFPropertyStorage_GetPropertyAt) {
 	EXPECT_EQ(res_variant.doubleValue, 2.74);
 }
 
-TEST_F(Memory, AMFPropertyStorage_Clear) {
+TEST_F(Memory2, AMFPropertyStorage_Clear) {
 	AMFVariantStruct variant, res_variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignDouble(&variant, (amf_double)2.74);
@@ -442,7 +457,7 @@ TEST_F(Memory, AMFPropertyStorage_Clear) {
 	EXPECT_EQ(res, AMF_NOT_FOUND);
 }
 
-TEST_F(Memory, AMFPropertyStorage_AddTo) {
+TEST_F(Memory2, AMFPropertyStorage_AddTo) {
 	AMFContextPtr context2;
 	factory->CreateContext(&context2);
 	AMFVariantStruct variant, res_variant;
@@ -455,7 +470,7 @@ TEST_F(Memory, AMFPropertyStorage_AddTo) {
 	EXPECT_EQ(res_variant.doubleValue, 2.74);
 }
 
-TEST_F(Memory, AMFPropertyStorage_CopyTo) {
+TEST_F(Memory2, AMFPropertyStorage_CopyTo) {
 	AMFContextPtr context2;
 	factory->CreateContext(&context2);
 	AMFVariantStruct variant, res_variant;
@@ -469,7 +484,7 @@ TEST_F(Memory, AMFPropertyStorage_CopyTo) {
 }
 
 // TODO: Use AMF(Component/Input/Output) to implement the following 2 cases when CreateComponent is implemented
-TEST_F(Memory, DISABLED_AMFPropertyStorageEx_GetPropertyInfo) {
+TEST_F(Memory2, DISABLED_AMFPropertyStorageEx_GetPropertyInfo) {
 	AMFVariantStruct variant, res_variant;
 	AMFVariantInit(&variant);
 	AMFVariantAssignDouble(&variant, (amf_double)2.74);
@@ -482,14 +497,14 @@ TEST_F(Memory, DISABLED_AMFPropertyStorageEx_GetPropertyInfo) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Memory, DISABLED_AMFPropertyStorage_ValidateProperty) {
+TEST_F(Memory2, DISABLED_AMFPropertyStorage_ValidateProperty) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 ////////////////////////////////////////////////////////////////////////
 
 
 
-TEST_F(Memory, AMFBuffer_SetSize) {
+TEST_F(Memory2, AMFBuffer_SetSize) {
 	AMFBuffer* buffer;
 	AMFBuffer* buffer_res;
 	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &buffer);
@@ -497,14 +512,14 @@ TEST_F(Memory, AMFBuffer_SetSize) {
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Memory, DISABLED_AMFSurface_SetCrop) {
+TEST_F(Memory2, DISABLED_AMFSurface_SetCrop) {
 	AMFSurface* surface;
 	context1->AllocSurface(AMF_MEMORY_HOST, AMF_SURFACE_ARGB, 10, 10, &surface);
 	res = surface->SetCrop(5, 5, 2, 2);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Memory, AMFPrograms_RegisterKernelSource) {
+TEST_F(Memory2, AMFPrograms_RegisterKernelSource) {
 	AMFPrograms* program;
 	factory->GetPrograms(&program);
 	AMF_KERNEL_ID kernel = 0;
@@ -520,7 +535,7 @@ TEST_F(Memory, AMFPrograms_RegisterKernelSource) {
 }
 
 // TODO: Add test files and finish test
-TEST_F(Memory, AMFPrograms_RegisterKernelSourceFile) {
+TEST_F(Memory2, AMFPrograms_RegisterKernelSourceFile) {
 	AMFPrograms* program;
 	factory->GetPrograms(&program);
 	AMF_KERNEL_ID kernel = 0;
@@ -528,7 +543,7 @@ TEST_F(Memory, AMFPrograms_RegisterKernelSourceFile) {
 }
 
 // TODO: Add a coresponding binary and finish test
-TEST_F(Memory, AMFPrograms_RegisterKernelBinary) {
+TEST_F(Memory2, AMFPrograms_RegisterKernelBinary) {
 	AMFPrograms* program;
 	factory->GetPrograms(&program);
 	AMF_KERNEL_ID kernel = 0;
