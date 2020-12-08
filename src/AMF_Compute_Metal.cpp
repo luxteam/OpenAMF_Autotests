@@ -56,41 +56,41 @@ struct AMF_Compute_Metal : testing::Test {
 	}
 };
 
-TEST_F(AMF_Compute_Metal, 1_InitializateFactory) {
+TEST_F(AMF_Compute_Metal, 1_InitializateFactory_Metal) {
 	g_AMFFactory.Init();
 	helper.Init();
 	factory = helper.GetFactory();
 }
 
-TEST_F(AMF_Compute_Metal, 2_CreateContext) {
+TEST_F(AMF_Compute_Metal, 2_CreateContext_Metal) {
 	factory->CreateContext(&context);
 	context->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
 	context->GetMetalComputeFactory(&metalComputeFactory);
 }
 
-TEST_F(AMF_Compute_Metal, 3_CreatePrograms) {
+TEST_F(AMF_Compute_Metal, 3_CreatePrograms_Metal) {
 	factory->GetPrograms(&pPrograms);
 	pPrograms->RegisterKernelSource(&kernel, L"kernelIDName", "multiplication", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
 }
 
-TEST_F(AMF_Compute_Metal, 4_InitializeDevice) {
+TEST_F(AMF_Compute_Metal, 4_InitializeDevice_Metal) {
 	metalComputeFactory->GetDeviceAt(0, &pComputeDevice);
 	pComputeDevice->GetNativeContext();
 }
 
-TEST_F(AMF_Compute_Metal, 5_GetComputeFromDeviceAndLoadKernel) {
+TEST_F(AMF_Compute_Metal, 5_GetComputeFromDeviceAndLoadKernel_Metal) {
 	pComputeDevice->CreateCompute(nullptr, &pCompute);
 }
 
-TEST_F(AMF_Compute_Metal, 6_LoadKernelIntoCompute) {
+TEST_F(AMF_Compute_Metal, 6_LoadKernelIntoCompute_Metal) {
 	pCompute->GetKernel(kernel, &pKernel);
 }
 
-TEST_F(AMF_Compute_Metal, 7_InitMetalInContext) {
+TEST_F(AMF_Compute_Metal, 7_InitMetalInContext_Metal) {
 	context->InitMetal();
 }
 
-TEST_F(AMF_Compute_Metal, 8_AllocateBuffers) {
+TEST_F(AMF_Compute_Metal, 8_AllocateBuffers_Metal) {
 	context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input);
 	context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input2);
 	context->AllocBuffer(AMF_MEMORY_METAL, 1024 * sizeof(float), &output);
@@ -98,7 +98,7 @@ TEST_F(AMF_Compute_Metal, 8_AllocateBuffers) {
 	inputData2 = static_cast<float*>(input2->GetNative());
 }
 
-TEST_F(AMF_Compute_Metal, 9_InitializeRandomData) {
+TEST_F(AMF_Compute_Metal, 9_InitializeRandomData_Metal) {
 	for (int k = 0; k < 1024; k++)
 	{
 		inputData[k] = rand() / 50.00;
@@ -107,29 +107,29 @@ TEST_F(AMF_Compute_Metal, 9_InitializeRandomData) {
 	}
 }
 
-TEST_F(AMF_Compute_Metal, 10_ConvertInputFromHostToMetal) {
+TEST_F(AMF_Compute_Metal, 10_ConvertInputFromHostToMetal_Metal) {
 	input->Convert(AMF_MEMORY_METAL);
 }
 
-TEST_F(AMF_Compute_Metal, 11_SetShaderArguments) {
+TEST_F(AMF_Compute_Metal, 11_SetShaderArguments_Metal) {
 	pKernel->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
 	pKernel->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
 	pKernel->SetArgBuffer(2, input2, AMF_ARGUMENT_ACCESS_READ);
 	pKernel->SetArgInt32(3, 1024);
 }
 
-TEST_F(AMF_Compute_Metal, 12_LaunchShader) {
+TEST_F(AMF_Compute_Metal, 12_LaunchShader_Metal) {
 	pKernel->GetCompileWorkgroupSize(sizeLocal);
 	pKernel->Enqueue(1, offset, sizeGlobal, NULL);
 	pCompute->FlushQueue();
 	pCompute->FinishQueue();
 }
 
-TEST_F(AMF_Compute_Metal, 13_MoveResultToHost) {
+TEST_F(AMF_Compute_Metal, 13_MoveResultToHost_Metal) {
 	output->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
 }
 
-TEST_F(AMF_Compute_Metal, 14_CompareResultToExpected) {
+TEST_F(AMF_Compute_Metal, 14_CompareResultToExpected_Metal) {
 	for (int k = 0; k < 1024; k++)
 	{
 		EXPECT_LE(abs(expectedData[k] - outputData2[k]), 0.01);

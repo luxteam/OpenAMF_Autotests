@@ -55,41 +55,41 @@ struct AMF_Compute_OpenCL : testing::Test {
 	}
 };
 
-TEST_F(AMF_Compute_OpenCL, 1_InitializateFactory) {
+TEST_F(AMF_Compute_OpenCL, 1_InitializateFactory_OCL) {
 	g_AMFFactory.Init();
 	helper.Init();
 	factory = helper.GetFactory();
 }
 
-TEST_F(AMF_Compute_OpenCL, 2_CreateContext) {
+TEST_F(AMF_Compute_OpenCL, 2_CreateContext_OCL) {
 	factory->CreateContext(&context);
 	context->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
 	context->GetOpenCLComputeFactory(&oclComputeFactory);
 }
 
-TEST_F(AMF_Compute_OpenCL, 3_CreatePrograms) {
+TEST_F(AMF_Compute_OpenCL, 3_CreatePrograms_OCL) {
 	factory->GetPrograms(&pPrograms);
 	pPrograms->RegisterKernelSource(&kernel, L"kernelIDName", "multiplication", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
 }
 
-TEST_F(AMF_Compute_OpenCL, 4_InitializeDevice) {
+TEST_F(AMF_Compute_OpenCL, 4_InitializeDevice_OCL) {
 	oclComputeFactory->GetDeviceAt(0, &pComputeDevice);
 	pComputeDevice->GetNativeContext();
 }
 
-TEST_F(AMF_Compute_OpenCL, 5_GetComputeFromDevice) {
+TEST_F(AMF_Compute_OpenCL, 5_GetComputeFromDevice_OCL) {
 	pComputeDevice->CreateCompute(nullptr, &pCompute);
 }
 
-TEST_F(AMF_Compute_OpenCL, 6_LoadKernelIntoCompute) {
+TEST_F(AMF_Compute_OpenCL, 6_LoadKernelIntoCompute_OCL) {
 	pCompute->GetKernel(kernel, &pKernel);
 }
 
-TEST_F(AMF_Compute_OpenCL, 7_InitOpenCLInContextWithComputeNativeCommandQueue) {
+TEST_F(AMF_Compute_OpenCL, 7_InitOpenCLInContextWithComputeNativeCommandQueue_OCL) {
 	context->InitOpenCL(pCompute->GetNativeCommandQueue());
 }
 
-TEST_F(AMF_Compute_OpenCL, 8_AllocateBuffers) {
+TEST_F(AMF_Compute_OpenCL, 8_AllocateBuffers_OCL) {
 	context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input);
 	context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input2);
 	context->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &output);
@@ -97,7 +97,7 @@ TEST_F(AMF_Compute_OpenCL, 8_AllocateBuffers) {
 	inputData2 = static_cast<float*>(input2->GetNative());
 }
 
-TEST_F(AMF_Compute_OpenCL, 9_InitializeRandomData) {
+TEST_F(AMF_Compute_OpenCL, 9_InitializeRandomData_OCL) {
 	for (int k = 0; k < 1024; k++)
 	{
 		inputData[k] = rand() / 50.00;
@@ -106,29 +106,29 @@ TEST_F(AMF_Compute_OpenCL, 9_InitializeRandomData) {
 	}
 }
 
-TEST_F(AMF_Compute_OpenCL, 10_ConvertInputFromHostToOpenCL) {
+TEST_F(AMF_Compute_OpenCL, 10_ConvertInputFromHostToOpenCL_OCL) {
 	input->Convert(AMF_MEMORY_OPENCL);
 }
 
-TEST_F(AMF_Compute_OpenCL, 11_SetShaderArguments) {
+TEST_F(AMF_Compute_OpenCL, 11_SetShaderArguments_OCL) {
 	pKernel->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
 	pKernel->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
 	pKernel->SetArgBuffer(2, input2, AMF_ARGUMENT_ACCESS_READ);
 	pKernel->SetArgInt32(3, 1024);
 }
 
-TEST_F(AMF_Compute_OpenCL, 12_LaunchShader) {
+TEST_F(AMF_Compute_OpenCL, 12_LaunchShader_OCL) {
 	pKernel->GetCompileWorkgroupSize(sizeLocal);
 	pKernel->Enqueue(1, offset, sizeGlobal, NULL);
 	pCompute->FlushQueue();
 	pCompute->FinishQueue();
 }
 
-TEST_F(AMF_Compute_OpenCL, 13_MoveResultToHost) {
+TEST_F(AMF_Compute_OpenCL, 13_MoveResultToHost_OCL) {
 	output->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
 }
 
-TEST_F(AMF_Compute_OpenCL, 14_CompareResultToExpected) {
+TEST_F(AMF_Compute_OpenCL, 14_CompareResultToExpected_OCL) {
 	for (int k = 0; k < 1024; k++)
 	{
 		EXPECT_LE(abs(expectedData[k] - outputData2[k]), 0.01);

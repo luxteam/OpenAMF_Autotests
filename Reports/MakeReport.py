@@ -86,7 +86,7 @@ def main():
             res['Code'] = get_groups_code(res['name']).replace('\n', '<br>')
             res['not_implemented'] = calculateTestSuiteNotImplemented(res['testsuite'])
             res['failures'] -= res['not_implemented']
-        not_implemented = sum(map(calculateNotImplemented, statistics))
+        not_implemented = int(sum(map(calculateNotImplemented, statistics)) / len(statistics))
         gpu_stat.append(
             {
             'Platform' : result['platform'],
