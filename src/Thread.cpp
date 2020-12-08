@@ -127,6 +127,11 @@ void eventTest() {
 	x *= 2;
 }
 
+TEST_F(Thread, recursive_mutex) {
+	amf_wait_for_mutex("\\global1", 30);
+	amf_wait_for_mutex("\\global1", 30);
+}
+
 TEST_F(Thread, amf_set_event) {
 	threadObj = thread(eventTest);
 	x++;
