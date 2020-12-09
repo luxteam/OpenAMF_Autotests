@@ -1,4 +1,5 @@
-#include "autotests.h"
+#include "Autotests.h"
+
 #ifndef UTILITY_AUTOTESTS
 #define UTILITY_AUTOTESTS
 
