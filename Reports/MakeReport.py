@@ -28,9 +28,14 @@ def find_code(case_name):
             pass
 
 def get_groups_code(group_name):
-    for source_file in glob(os.path.join("../src", '%s.cpp' % group_name)):
-        with open(source_file, 'r', encoding='utf-8') as source_code:
-            return source_code.read()
+    try:
+        for source_file in glob(os.path.join("../src", '%s.cpp' % group_name)):
+            with open(source_file, 'r', encoding='utf-8') as source_code:
+                return source_code.read()
+    except Exception as e:
+        logger.error('Fail during getting code of "{}" group: {}'.format(group_name, str(err)))
+    logger.error('File with code for "{}" group wasn\'t found'.format(group_name))
+    return ""
 
 
 def calculateNotImplemented(stat):
