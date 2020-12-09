@@ -1,4 +1,4 @@
-﻿#include "autotests.h"
+﻿#include "Autotests.h"
 
 struct AMF_Memory : testing::Test {
 	AMFFactoryHelper helper;

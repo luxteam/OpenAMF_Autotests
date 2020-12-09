@@ -1,4 +1,4 @@
-#include "autotests.h"
+#include "Autotests.h"
 
 // Shared Variables //
 static AMFFactoryHelper helper;

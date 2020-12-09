@@ -1,4 +1,4 @@
-#include "autotests.h"
+#include "Autotests.h"
 #include "../../../common/Thread.h"
 
 struct General : testing::Test {
