@@ -6,6 +6,11 @@
         url("../fonts/OpenSans-Regular.ttf") format("opentype");
  }
 
+ @font-face {
+  font-family: "AMDRTG";
+  src: url(../fonts/AMDRTG.ttf) format("truetype");
+}
+
 body {
   background-color: rgba(242, 242, 242, 1);
   background-repeat: no-repeat;

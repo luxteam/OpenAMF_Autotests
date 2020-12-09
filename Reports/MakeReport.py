@@ -26,6 +26,12 @@ def find_code(case_name):
         except Exception as e:
             pass
 
+def get_groups_code(group_name):
+    for source_file in glob(os.path.join("../src", '%s.cpp' % group_name)):
+        with open(source_file, 'r', encoding='utf-8') as source_code:
+            return source_code.read()
+
+
 def calculateNotImplemented(stat):
     total_non_implemented = 0
     for result in stat['testsuites']:
@@ -77,9 +83,10 @@ def main():
     gpu_stat = list()
     for result in statistics:
         for res in result['testsuites']:
+            res['Code'] = get_groups_code(res['name']).replace('\n', '<br>')
             res['not_implemented'] = calculateTestSuiteNotImplemented(res['testsuite'])
             res['failures'] -= res['not_implemented']
-        not_implemented = sum(map(calculateNotImplemented, statistics))
+        not_implemented = int(sum(map(calculateNotImplemented, statistics)) / len(statistics))
         gpu_stat.append(
             {
             'Platform' : result['platform'],
@@ -106,7 +113,7 @@ def main():
         logger.error('Fail during summary report building: {}'.format(str(err)))
         rc = -1
 
-    with open(os.path.join(args.test_results, 'mainPage.html'), 'w') as fh:
+    with open(os.path.join(args.test_results, 'mainPage.html'), 'w', encoding='utf-8') as fh:
         fh.write(out_file)
 
 

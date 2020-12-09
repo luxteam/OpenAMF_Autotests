@@ -71,17 +71,23 @@ project(autotests)
 
 # Local header files here ONLY
 SET(HEADERS
-    src/autotests.h
+    src/Autotests.h
    )
 
 # Local source files here
 SET(SOURCES
-    src/General.cpp
-    src/Complex.cpp
-    src/Implementation.cpp
-    src/OpenCL.cpp
-    src/Metal.cpp
     src/Autotests.cpp
+    src/AMF_Compute_OpenCL.cpp
+    src/AMF_Compute_Metal.cpp
+    src/AMF_Factory.cpp
+    src/AMF_Programs.cpp
+    src/AMF_PropertyStorage.cpp
+    src/AMF_Trace.cpp
+    src/AMF_VariantStruct.cpp
+    src/AMFSTL.cpp
+    src/Memory.cpp
+    src/MultithreadCompute.cpp
+    src/Thread.cpp
     )
 
 include_directories(../../include)
