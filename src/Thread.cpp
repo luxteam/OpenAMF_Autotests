@@ -1,4 +1,4 @@
-#include "autotests.h"
+#include "Autotests.h"
 #include <thread>
 
 static AMFMutex mutex1 = amf_create_mutex(false, L"/test1");
