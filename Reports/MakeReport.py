@@ -7,6 +7,7 @@ from glob import glob
 from shutil import copytree, rmtree
 import logging
 import re
+from datetime import datetime
 
 SKIP_FILE = os.path.join('resources', 'tests_skips.json')
 
@@ -54,6 +55,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--commit_hash', required=True)
     parser.add_argument('--branch_name', required=True)
+    parser.add_argument('--commit_message', required=True)
+    parser.add_argument('--commit_datetime', required=True)
     parser.add_argument('--test_results', required=True)
     args = parser.parse_args()
 
@@ -103,11 +106,17 @@ def main():
             }
         )
 
+    # parse timezone
+    commit_datetime_object = datetime_object = datetime.strptime(args.commit_datetime, "%Y-%m-%d %H:%M:%S %z")
+    commit_datetime = commit_datetime_object.strftime("%Y-%m-%d %H:%M:%S")
+
     try:
         out_file = template.render(
             gpu_stat=gpu_stat,
             commit_hash=args.commit_hash,
-            branch_name=args.branch_name
+            branch_name=args.branch_name,
+            commit_message=args.commit_message.encode().decode('unicode-escape'),
+            commit_datetime=commit_datetime
         )
     except Exception as err:
         logger.error('Fail during summary report building: {}'.format(str(err)))
