@@ -1,4 +1,4 @@
-#include "autotests.h"
+﻿#include "autotests.h"
 
 struct Implementation : testing::Test {
 	AMFFactoryHelper helper;
@@ -6,6 +6,7 @@ struct Implementation : testing::Test {
 	AMFComputeFactoryPtr oclComputeFactory;
 	AMFFactory* factory;
 	int deviceCount;
+	AMF_RESULT res;
 	chrono::time_point<chrono::system_clock> startTime;
 
 	static void SetUpTestCase() {
@@ -20,6 +21,9 @@ struct Implementation : testing::Test {
 		helper.Init();
 		factory = helper.GetFactory();
 		factory->CreateContext(&context1);
+		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		context1->GetOpenCLComputeFactory(&oclComputeFactory);
+		context1->InitOpenCL();
 		g_AMFFactory.Init();
 		startTime = initiateTestLog();
 	}
@@ -33,41 +37,40 @@ struct Implementation : testing::Test {
 	}
 };
 
-TEST_F(Implementation, openCL_compute_factory_impl) {
+TEST_F(Implementation, AMFContext_GetOpenCLComputeFactory) {
 	AMFComputeFactoryPtr fact;
-	AMF_RESULT res = context1->GetOpenCLComputeFactory(&fact);
+	res = context1->GetOpenCLComputeFactory(&fact);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Implementation, DISABLED_DX11_impl) {
-	AMF_RESULT res = context1->InitDX11(context1->GetDX11Device());
+TEST_F(Implementation, AMFContext_InitDX11_GetDX11Device) {
+	res = context1->InitDX11(context1->GetDX11Device());
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Implementation, DISABLED_DX9_impl) {
-	AMF_RESULT res = context1->InitDX9(context1->GetDX9Device());
+TEST_F(Implementation, AMFContext_InitDX9_GetDX9Device) {
+	res = context1->InitDX9(context1->GetDX9Device());
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Implementation, DISABLED_openGL_impl) {
-	AMF_RESULT res = context1->InitOpenGL(context1->GetOpenGLContext(), NULL, NULL);
+TEST_F(Implementation, AMFContext_InitOpenGL_GetOpenGLContext) {
+	res = context1->InitOpenGL(context1->GetOpenGLContext(), NULL, NULL);
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Implementation, DISABLED_xv_impl) {
-	AMF_RESULT res = context1->InitXV(context1->GetXVDevice());
+TEST_F(Implementation, AMFContext_InitXV_GetXVDevice) {
+	res = context1->InitXV(context1->GetXVDevice());
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Implementation, DISABLED_grall_impl) {
-	AMF_RESULT res = context1->InitGralloc(context1->GetGrallocDevice());
+TEST_F(Implementation, AMFContext_InitGralloc_GetGrallocDevice) {
+	res = context1->InitGralloc(context1->GetGrallocDevice());
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
 
-TEST_F(Implementation, DISABLED_opencl_lock_unlock_impl) {
-	AMF_RESULT res = context1->LockOpenCL();
+TEST_F(Implementation, AMFContext_LockOpenCL_UnlockOpenCL) {
+	res = context1->LockOpenCL();
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 	res = context1->UnlockOpenCL();
 	EXPECT_NE(res, AMF_NOT_IMPLEMENTED);
 }
-

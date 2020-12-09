@@ -71,18 +71,17 @@ project(autotests)
 
 # Local header files here ONLY
 SET(HEADERS
-    autotests.h
+    src/autotests.h
    )
 
 # Local source files here
 SET(SOURCES
-    api.cpp
-    autotests.cpp
-    geometry.cpp
-    implementation.cpp
-    main.cpp
-    multithread.cpp
-    references.cpp
+    src/General.cpp
+    src/Complex.cpp
+    src/Implementation.cpp
+    src/OpenCL.cpp
+    src/Metal.cpp
+    src/Autotests.cpp
     )
 
 include_directories(../../include)
@@ -98,4 +97,12 @@ if(AMF_CORE_STATIC)
   target_link_libraries(${PROJECT_NAME} ${AMF_NAME} ${OpenCL_LIBRARIES} gtest_main)
 else()
   target_link_libraries(${PROJECT_NAME} ${AMF_LOADER_NAME} gtest_main)
+endif()
+
+if(NOT WIN32)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
+    -framework AppKit \
+    -framework Metal \
+    -framework MetalKit"
+    )
 endif()

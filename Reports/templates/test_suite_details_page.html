@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="resources/css/table_style.css">
+    <link rel="stylesheet" href="resources/css/button_style.css">
+    <link rel="stylesheet" href="resources/css/search_style.css">
+    <script src="resources/js/search.js"></script>
+  </head>
+  <body>
+
+    <hr>
+    <div class="header"><b>Advanced Media Framework SDK</b></div>
+    <hr>
+
+    <br>
+    <br>
+
+    <table class="headerTable">
+      <tr>
+        <th>Test suite</th>
+        <th>Testing start</th>
+        <th>Platform</th>
+        <th>Configuration</th>
+        <th>Total</th>
+        <th>Passed</th>
+        <th>Failed</th>
+        <th>Disabled</th>
+        <th>Errors</th>
+        <th>Time taken</th>
+      </tr>
+      <tr>
+        <td>{{ test_suite["Name"] }}</td>
+        <td>{{ test_suite["Time stamp"] }}</td>
+        <td>{{ test_suite["Platform"] }}</td>
+        <td>{{ test_suite["Configuration"] | replace("_", " ") }}</td>
+        <td>{{ test_suite["Total"] }}</td>
+        <td>{{ test_suite["Passed"] }}</td>
+        <td>{{ test_suite["Failed"] }}</td>
+        <td>{{ test_suite["Disabled"] }}</td>
+        <td>{{ test_suite["Error"] }}</td>
+        <td>{{ test_suite["Time taken"] }}</td>
+      </tr>
+    </table>
+
+    <br>
+    <hr>
+    <br>
+
+    <br>
+    <input type="text" id="search_case" onkeyup="search_case()" placeholder="Search for case">
+    <table id="cases_table" class="baseTable">
+      <tr>
+        <th>Test Name</th>
+        <th>Test Status</th>
+        <th>Time spent</th>
+        <th>Time started</th>
+        <th>Failures Log</th>
+        <th>Test's Code</th>
+      </tr>
+      </th>
+      </tr>
+      {% for test_case in test_suite['Test cases'] %}
+        <tr>
+          <td class="table-first-column">{{ test_case['name'] }}</td>
+          <td>{{ test_case['Result']}}</td>
+          <td>
+            {% if (test_case['time'] == '0s') %}
+            -
+            {% else %}
+            {{ test_case['time'] }}
+            {% endif %}
+          </td>
+          <td>
+            {{ test_case['timestamp'].replace('T', ' ').replace('Z', '') }}
+          </td>
+          <td> <button class="popup-button" id="Button{{ loop.index }}">Log</button> </td>
+          <td> <button class="popup-button" id="Code{{ loop.index }}">Code</button></td>
+        </tr>
+
+        <div id="Error{{ loop.index }}" class="modal">
+          <div class="modal-content">
+            <span class="close" id="Close{{ loop.index }}">&times;</span>
+            <h3>{{ test_case['name'] }} log</h1> <br>
+            <p>{{ test_case['Fails Reason'] }}</p>
+          </div>
+        </div>
+
+        <div id="SourceCode{{ loop.index }}" class="modal">
+          <div class="modal-content">
+            <span class="close" id="CloseCode{{ loop.index }}">&times;</span>
+            <h3>{{ test_case['name'] }} code</h3>
+            <p>{{ test_case['Code'] }}</p>
+          </div>
+        </div>
+
+        <script>
+            var errbtn = document.getElementById("Button{{ loop.index }}");
+            var span = document.getElementById("Close{{ loop.index }}");
+
+            errbtn.onclick = function() {
+              document.getElementById("Error{{ loop.index }}").style.display = "block";
+              document.onkeydown = function(evt) {
+                  evt = evt || window.event;
+                  if (evt.keyCode == 27) {
+                    document.getElementById("Error{{ loop.index }}").style.display = "none";
+                  }
+              };
+            }
+            span.onclick = function() {
+              document.getElementById("Error{{ loop.index }}").style.display = "none";
+            }
+            window.onclick = function(event) {
+              if (event.target == document.getElementById("Error{{ loop.index }}")) {
+                document.getElementById("Error{{ loop.index }}").style.display = "none";
+              }
+            }
+
+            var codebtn = document.getElementById("Code{{ loop.index }}");
+            var codespan = document.getElementById("CloseCode{{ loop.index }}");
+
+            codebtn.onclick = function() {
+              document.getElementById("SourceCode{{ loop.index }}").style.display = "block";
+              document.onkeydown = function(evt) {
+                  evt = evt || window.event;
+                  if (evt.keyCode == 27) {
+                    document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+                  }
+              };
+            }
+            codespan.onclick = function() {
+              document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+            }
+            window.onclick = function(event) {
+              if (event.target == document.getElementById("SourceCode{{ loop.index }}")) {
+                document.getElementById("SourceCode{{ loop.index }}").style.display = "none";
+              }
+            }
+        </script>
+      {% endfor %}
+    </table>
+  </body>
+</html>

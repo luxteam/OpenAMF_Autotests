@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="resources/css/table_style.css">
+  </head>
+  <body>
+
+    <hr>
+    <div class="header"><b>Advanced Media Framework SDK</b></div>
+    <hr>
+
+    <br>
+    <br>
+    <div class="gpu-header"><b>Summary</b></div>
+    
+    <br>
+    <table class="headerTable">
+      <tr>
+        <th>Commit hash</th>
+        <th>Branch name</th>
+      </tr>
+      <tr>
+        <td>{{ commit_hash }}</td>
+        <td>{{ branch_name }}</td>
+      </tr>
+    </table>
+
+    <br>
+
+    <table class="headerTable">
+      <tr>
+        <th>Platform</th>
+        <th>Configuration</th>
+        <th>Total</th>
+        <th>Passed</th>
+        <th>Failed</th>
+        <th>Disabled</th>
+        <th>Errors</th>
+        <th>Not implemented</th>
+        <th>Time taken</th>
+      </tr>
+      {% for item in gpu_stat %}
+        <tr>
+          <td>{{ item['Platform']  }}</td>
+          <td>{{ item['Configuration'] | replace("_", " ") }}</td>
+          <td>{{ item['Total'] }}</td>
+          <td>{{ item['Passed'] }}</td>
+          <td>{{ item['Failed'] }}</td>
+          <td>{{ item['Disabled'] }}</td>
+          <td>{{ item['Error'] }}</td>
+          <td>{{ item['Not implemented'] }}</td>
+          <td>{{ item['Time taken'] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+    <br>
+    <br>
+
+    {% for item in gpu_stat %}
+    <div class="gpu-header"><b>{{ item['Platform'] }} ({{ item['Configuration'] | replace("_", " ") }})</b></div>
+    <br>
+    <table class="baseTable">
+      <tr>
+        <th>Test Suite</th>
+        <th>Host</th>
+        <th>Details</th>
+        <th>Test Log</th>
+        <th>Memory log</th>
+        <th>Total</th>
+        <th>Passed</th>
+        <th>Failed</th>
+        <th>Disabled</th>
+        <th>Errors</th>
+        <th>Not implemented</th>
+        <th>Time taken</th>
+      </tr>
+        {% for group_info in item['Test suites'] %}
+          <tr>
+            <td class="table-first-column">{{ group_info['name'] }}</td>
+            <td>{{ item['Hostname'] }}</td>
+            <td><a href="details_{{ group_info['name'] }}_{{ item['Platform'] }}_{{ item['Configuration'] }}.html">Details</a></td>
+            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.log">Link to .log file</a></td>
+            <td><a href="Test-{{ item['Platform'] }}.{{ item['Configuration'] }}.out.log">Link to .out.log file</a></td>
+            <td>{{ group_info['tests'] }}</td>
+            <td>{{ group_info['tests'] - group_info['failures'] - group_info['disabled'] - group_info['errors'] }}</td>
+            <td>{{ group_info['failures'] }}</td>
+            <td>{{ group_info['disabled'] }}</td>
+            <td>{{ group_info['errors'] }}</td>
+            <td>{{ group_info['not_implemented'] }}</td>
+            <td>
+              {% if (group_info['time'] == '0s') %}
+              -
+              {% else %}
+              {{ group_info['time'] }}
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        <tr>
+          <th style colspan="5">Sum</td>
+          <th>{{ item['Total'] }}</td>
+          <th>{{ item['Passed'] }}</td>
+          <th>{{ item['Failed'] }}</td>
+          <th>{{ item['Disabled'] }}</td>
+          <th>{{ item['Error'] }}</td>
+          <th>{{ item['Not implemented'] }}</td>
+          <th>{{ item['Time taken'] }}</td>
+        </tr>
+    </table>
+    <br>
+    {% endfor %}
+  </body>
+</html>
