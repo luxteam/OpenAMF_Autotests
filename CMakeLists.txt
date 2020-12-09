@@ -71,7 +71,7 @@ project(autotests)
 
 # Local header files here ONLY
 SET(HEADERS
-    src/autotests.h
+    src/Autotests.h
    )
 
 # Local source files here
