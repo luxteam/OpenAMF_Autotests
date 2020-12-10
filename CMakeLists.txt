@@ -85,7 +85,6 @@ SET(SOURCES
     src/AMF_Trace.cpp
     src/AMF_VariantStruct.cpp
     src/AMFSTL.cpp
-    src/Memory.cpp
     src/MultithreadCompute.cpp
     src/Thread.cpp
     )
