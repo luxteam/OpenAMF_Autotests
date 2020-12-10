@@ -84,7 +84,7 @@ SET(SOURCES
     src/AMF_PropertyStorage.cpp
     src/AMF_Trace.cpp
     src/AMF_VariantStruct.cpp
-    src/AMFSTL.cpp
+    src/AMF_STL.cpp
     src/MultithreadCompute.cpp
     src/Thread.cpp
     )
