@@ -86,7 +86,6 @@ SET(SOURCES
     src/AMF_VariantStruct.cpp
     src/AMF_STL.cpp
     src/MultithreadCompute.cpp
-    src/Thread.cpp
     )
 
 include_directories(../../include)

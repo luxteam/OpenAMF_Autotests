@@ -1,4 +1,4 @@
-﻿#include "autotests.h"
+﻿#include "Autotests.h"
 
 struct Implementation : testing::Test {
 	AMFFactoryHelper helper;

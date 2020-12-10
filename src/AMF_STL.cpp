@@ -1,4 +1,4 @@
-#include "autotests.h"
+#include "Autotests.h"
 #include "../../../common/AMFSTL.h"
 
 struct AMF_STL : testing::Test {

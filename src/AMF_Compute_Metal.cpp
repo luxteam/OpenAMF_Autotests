@@ -1,5 +1,5 @@
 #ifdef __APPLE__
-#include "autotests.h"
+#include "Autotests.h"
 
 static AMFFactoryHelper helper;
 static AMFContextPtr context;

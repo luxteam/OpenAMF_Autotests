@@ -3,8 +3,10 @@
   <head>
     <link rel="stylesheet" href="resources/css/table_style.css">
     <link rel="stylesheet" href="resources/css/button_style.css">
+    <script src="resources/js/modals.js"></script>
   </head>
   <body>
+
 
     <hr>
     <div class="header"><b>Advanced Media Framework SDK</b></div>
@@ -64,27 +66,66 @@
 
     {% for item in gpu_stat %}
     <div class="gpu-header"><b>{{ item['Platform'] | replace("_", " ") | replace("-", " ") }} ({{ item['Configuration'] | replace("_", " ") | lower() }})</b></div>
+    {% set itemloop = loop %}
+
+    <div id="machineInfoModal{{ itemloop.index }}" class="modal">
+      <div class="modal-content">
+        <span class="close" id="machineInfoCloseButton{{ itemloop.index }}">&times;</span>
+        <h3>Machine info ({{ item['Machine info']['host'] }})</h3>
+        <table class="baseTable">
+          <thead>
+            <tr>
+              <th>OS</th>
+              <th>RAM, Gb</th>
+              <th>CPU</th>
+              <th>CPU count</th>
+              <th>GPU</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ item['Machine info']['os'] }}</td>
+              <td>{{ item['Machine info']['ram'] | round }}</td>
+              <td>{{ item['Machine info']['cpu'] }}</td>
+              <td>{{ item['Machine info']['cpu_count'] }}</td>
+              <td>{{ item['Machine info']['gpu'] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="gpu-header"><b>{{ item['Platform'] }} ({{ item['Configuration'] | replace("_", " ") }})</b></div>
     <br>
     <table class="baseTable">
-      <tr>
-        <th>Test Suite</th>
-        <th>Host</th>
-        <th>Details</th>
-        <th>Total</th>
-        <th>Passed</th>
-        <th>Failed</th>
-        <th>Disabled</th>
-        <th>Errors</th>
-        <th>Not implemented</th>
-        <th>Time taken</th>
-        <th>Test Log</th>
-        <th>Memory log</th>
-        <th>Group's code</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>Test Suite</th>
+          <th>Host</th>
+          <th>Details</th>
+          <th>Total</th>
+          <th>Passed</th>
+          <th>Failed</th>
+          <th>Disabled</th>
+          <th>Errors</th>
+          <th>Not implemented</th>
+          <th>Time taken</th>
+          <th>Test Log</th>
+          <th>Memory log</th>
+          <th>Group's code</th>
+        </tr>
+        </tr>
+      </thead>
+      <tbody>
         {% for group_info in item['Test suites'] %}
           <tr>
             <td class="table-first-column">{{ group_info['name'] }}</td>
-            <td>{{ item['Hostname'] }}</td>
+            <td>
+              <button class="popup-button" id="machineInfoOpenButton{{ loop.index }}">{{ item['Machine info']['host'] }}</button>
+              <script>
+                initModalWindow("machineInfoOpenButton{{ loop.index }}", "machineInfoCloseButton{{ itemloop.index }}", "machineInfoModal{{ itemloop.index }}")
+              </script>
+            </td>
             <td><a href="details_{{ group_info['name'] }}_{{ item['Platform'] }}_{{ item['Configuration'] }}.html">Details</a></td>
             <td>{{ group_info['tests'] }}</td>
             <td>{{ group_info['tests'] - group_info['failures'] - group_info['disabled'] - group_info['errors'] }}</td>
@@ -146,6 +187,7 @@
           <th>{{ item['Time taken'] }}</td>
           <th style colspan="3"></td>
         </tr>
+      </tbody>
     </table>
     <br>
     {% endfor %}
