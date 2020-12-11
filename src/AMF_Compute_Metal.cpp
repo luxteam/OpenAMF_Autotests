@@ -57,56 +57,56 @@ struct AMF_Compute_Metal : testing::Test {
 
 TEST_F(AMF_Compute_Metal, 1_InitializateFactory_Metal) {
 	res = g_AMFFactory.Init();
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = helper.Init();
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	factory = helper.GetFactory();
 }
 
 TEST_F(AMF_Compute_Metal, 2_CreateContext_Metal) {
 	res = factory->CreateContext(&context);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = context->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = context->GetMetalComputeFactory(&metalComputeFactory);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 3_CreatePrograms_Metal) {
 	res = factory->GetPrograms(&pPrograms);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = pPrograms->RegisterKernelSource(&kernel, L"kernelIDName", "multiplication", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 4_InitializeDevice_Metal) {
 	res = metalComputeFactory->GetDeviceAt(0, &pComputeDevice);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	pComputeDevice->GetNativeContext();
 }
 
 TEST_F(AMF_Compute_Metal, 5_GetComputeFromDeviceAndLoadKernel_Metal) {
 	res = pComputeDevice->CreateCompute(nullptr, &pCompute);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 6_LoadKernelIntoCompute_Metal) {
 	res = pCompute->GetKernel(kernel, &pKernel);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 7_InitMetalInContext_Metal) {
 	res = context->InitMetal();
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 8_AllocateBuffers_Metal) {
 	res = context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = context->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input2);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = context->AllocBuffer(AMF_MEMORY_METAL, 1024 * sizeof(float), &output);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	inputData = static_cast<float*>(input->GetNative());
 	inputData2 = static_cast<float*>(input2->GetNative());
 }
@@ -122,34 +122,34 @@ TEST_F(AMF_Compute_Metal, 9_InitializeRandomData_Metal) {
 
 TEST_F(AMF_Compute_Metal, 10_ConvertInputFromHostToMetal_Metal) {
 	res = input->Convert(AMF_MEMORY_METAL);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 11_SetShaderArguments_Metal) {
 	res = pKernel->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = pKernel->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = pKernel->SetArgBuffer(2, input2, AMF_ARGUMENT_ACCESS_READ);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = pKernel->SetArgInt32(3, 1024);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 12_LaunchShader_Metal) {
 	res = pKernel->GetCompileWorkgroupSize(sizeLocal);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = pKernel->Enqueue(1, offset, sizeGlobal, NULL);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = pCompute->FlushQueue();
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 	res = pCompute->FinishQueue();
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 13_MoveResultToHost_Metal) {
 	output->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
-	EXPECT_EQ(res, AMF_OK);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(AMF_Compute_Metal, 14_CompareResultToExpected_Metal) {
