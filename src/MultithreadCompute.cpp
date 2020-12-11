@@ -133,11 +133,11 @@ TEST_F(MultithreadCompute, 10_ConvertInputFromHostToOpenCLMT) {
 TEST_F(MultithreadCompute, 11_SetShaderArgumentsMT) {
 	pKernel1->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
 	pKernel1->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
-	pKernel1->SetArgInt32(3, 1024);
+	pKernel1->SetArgInt32(2, 1024);
 
 	pKernel2->SetArgBuffer(0, output2, AMF_ARGUMENT_ACCESS_WRITE);
-	pKernel2->SetArgBuffer(2, input2, AMF_ARGUMENT_ACCESS_READ);
-	pKernel2->SetArgInt32(3, 1024);
+	pKernel2->SetArgBuffer(1, input2, AMF_ARGUMENT_ACCESS_READ);
+	pKernel2->SetArgInt32(2, 1024);
 }
 
 void launchSecondKernel() {
@@ -149,7 +149,7 @@ void launchSecondKernel() {
 }
 
 TEST_F(MultithreadCompute, 12_LaunchShaderMT) {
-	//threadObj = thread(launchSecondKernel);
+	threadObj = thread(launchSecondKernel);
 	pKernel1->GetCompileWorkgroupSize(sizeLocal);
 	pKernel1->Enqueue(1, offset, sizeGlobal, NULL);
 	pCompute1->FlushQueue();
@@ -162,7 +162,7 @@ TEST_F(MultithreadCompute, 13_MoveResultToHostMT) {
 }
 
 TEST_F(MultithreadCompute, 14_JoinThreadsMT) {
-	//threadObj.join();
+	threadObj.join();
 }
 
 TEST_F(MultithreadCompute, 15_CompareResultToExpectedMT) {
@@ -170,8 +170,8 @@ TEST_F(MultithreadCompute, 15_CompareResultToExpectedMT) {
 	{
 		EXPECT_LE(abs(expectedData[k] - outputData1[k]), 0.01);
 	}
-	//for (int k = 0; k < 1024; k++)
-	//{
-	//	EXPECT_LE(abs(expectedData2[k] - outputData2[k]), 0.01);
-	//}
+	for (int k = 0; k < 1024; k++)
+	{
+		EXPECT_LE(abs(expectedData2[k] - outputData2[k]), 0.01);
+	}
 }
