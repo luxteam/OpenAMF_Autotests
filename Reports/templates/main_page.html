@@ -14,7 +14,7 @@
 
     <br>
     <br>
-    <div class="gpu-header"><b>summary</b></div>
+    <div id="testanchor" class="gpu-header"><b>summary</b></div>
     
     <br>
     <table class="headerTable">
@@ -48,7 +48,7 @@
       </tr>
       {% for item in gpu_stat %}
         <tr>
-          <td>{{ item['Platform']  }}</td>
+          <td><a href="#{{ item['Platform']  }}{{ item['Configuration'] }}">{{ item['Platform']  }}</a></td>
           <td>{{ item['Configuration'] | replace("_", " ") }}</td>
           <td>{{ item['Total'] }}</td>
           <td>{{ item['Passed'] }}</td>
@@ -65,7 +65,7 @@
     <br>
 
     {% for item in gpu_stat %}
-    <div class="gpu-header"><b>{{ item['Platform'] | replace("_", " ") | replace("-", " ") }} ({{ item['Configuration'] | replace("_", " ") | lower() }})</b></div>
+    <div class="gpu-header" id="{{ item['Platform']  }}{{ item['Configuration'] }}"><b>{{ item['Platform'] | replace("_", " ") | replace("-", " ") }} ({{ item['Configuration'] | replace("_", " ") | lower() }})</b></div>
     {% set itemloop = loop %}
 
     <div id="machineInfoModal{{ itemloop.index }}" class="modal">
