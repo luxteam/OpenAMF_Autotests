@@ -15,12 +15,19 @@ struct AMF_Factory : testing::Test {
 		terminateTestSuiteLog();
 	}
 
+	void initResources() {
+		res = helper.Init();
+		ASSERT_EQ(res, AMF_OK);
+		factory = helper.GetFactory();
+		res = factory->CreateContext(&context1);
+		ASSERT_EQ(res, AMF_OK);
+		res = context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		ASSERT_EQ(res, AMF_OK);
+	}
+
 	AMF_Factory() {
 		startTime = initiateTestLog();
-		helper.Init();
-		factory = helper.GetFactory();
-		factory->CreateContext(&context1);
-		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		initResources();
 	}
 
 	~AMF_Factory() {

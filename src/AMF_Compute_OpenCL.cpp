@@ -3,25 +3,17 @@
 // Shared Variables //
 static AMFFactoryHelper helper;
 static AMFContextPtr context;
+
 static AMFComputeFactoryPtr oclComputeFactory;
 static AMFFactory* factory;
+
 static AMF_RESULT res;
 static AMFPrograms* pPrograms;
 static AMFComputeDevicePtr pComputeDevice;
+
 static AMF_KERNEL_ID kernel = 0;
-static AMFComputePtr pCompute;
 static AMFComputeKernelPtr pKernel;
-static AMFBuffer* input = NULL;
-static AMFBuffer* input2 = NULL;
-static AMFBuffer* output = NULL;
-static float* inputData;
-static float* inputData2;
-static float* expectedData = new float[1024];
-static int deviceCount;
-static amf_size sizeLocal[3] = { 1024, 0, 0 };
-static amf_size sizeGlobal[3] = { 1024, 0, 0 };
-static amf_size offset[3] = { 0, 0, 0 };
-static float* outputData2 = NULL;
+static AMFComputePtr pCompute;
 static const char* kernel_src = "\n" \
 "__kernel void square2( __global float* output, __global float* input, \n" \
 " const unsigned int count) {            \n" \
@@ -35,6 +27,23 @@ static const char* kernel_src = "\n" \
 " if(i < count) \n" \
 " output[i] = input[i] * input2[i]; \n" \
 "}                     \n";
+
+static AMFBuffer* input = NULL;
+static AMFBuffer* input2 = NULL;
+static AMFBuffer* output = NULL;
+
+static float* inputData;
+static float* inputData2;
+
+static float* outputData2 = NULL;
+
+static float* expectedData = new float[1024];
+static int deviceCount;
+
+static amf_size sizeLocal[3] = { 1024, 0, 0 };
+static amf_size sizeGlobal[3] = { 1024, 0, 0 };
+static amf_size offset[3] = { 0, 0, 0 };
+
 static chrono::time_point<chrono::system_clock> startTime;
 
 struct AMF_Compute_OpenCL : testing::Test {
