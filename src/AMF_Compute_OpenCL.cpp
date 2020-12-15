@@ -2,18 +2,18 @@
 
 // Shared Variables //
 static AMFFactoryHelper helper;
-static AMFContextPtr context;
+static AMFContextPtr context = NULL;
 
-static AMFComputeFactoryPtr oclComputeFactory;
-static AMFFactory* factory;
+static AMFComputeFactoryPtr oclComputeFactory = NULL;
+static AMFFactory* factory = NULL;
 
-static AMF_RESULT res;
-static AMFPrograms* pPrograms;
-static AMFComputeDevicePtr pComputeDevice;
+static AMF_RESULT res = AMF_OK;
+static AMFPrograms* pPrograms = NULL;
+static AMFComputeDevicePtr pComputeDevice = NULL;
 
 static AMF_KERNEL_ID kernel = 0;
-static AMFComputeKernelPtr pKernel;
-static AMFComputePtr pCompute;
+static AMFComputeKernelPtr pKernel = NULL;
+static AMFComputePtr pCompute = NULL;
 static const char* kernel_src = "\n" \
 "__kernel void square2( __global float* output, __global float* input, \n" \
 " const unsigned int count) {            \n" \
@@ -32,13 +32,13 @@ static AMFBuffer* input = NULL;
 static AMFBuffer* input2 = NULL;
 static AMFBuffer* output = NULL;
 
-static float* inputData;
-static float* inputData2;
+static float* inputData = NULL;
+static float* inputData2 = NULL;
 
 static float* outputData2 = NULL;
 
 static float* expectedData = new float[1024];
-static int deviceCount;
+static int deviceCount = NULL;
 
 static amf_size sizeLocal[3] = { 1024, 0, 0 };
 static amf_size sizeGlobal[3] = { 1024, 0, 0 };
