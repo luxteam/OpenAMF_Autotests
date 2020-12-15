@@ -65,52 +65,76 @@ struct MultithreadCompute : testing::Test {
 };
 
 TEST_F(MultithreadCompute, 1_InitializateFactoryMT) {
-	g_AMFFactory.Init();
-	helper.Init();
+	res = g_AMFFactory.Init();
+	ASSERT_EQ(res, AMF_OK);
+	res = helper.Init();
+	ASSERT_EQ(res, AMF_OK);
 	factory = helper.GetFactory();
 }
 
 TEST_F(MultithreadCompute, 2_CreateContextsMT) {
-	factory->CreateContext(&context1);
-	context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-	context1->GetOpenCLComputeFactory(&oclComputeFactory);
-	factory->CreateContext(&context2);
-	context2->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-	context2->GetOpenCLComputeFactory(&oclComputeFactory);
+	res = factory->CreateContext(&context1);
+	ASSERT_EQ(res, AMF_OK);
+	res = context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+	ASSERT_EQ(res, AMF_OK);
+	res = context1->GetOpenCLComputeFactory(&oclComputeFactory);
+	ASSERT_EQ(res, AMF_OK);
+	res = factory->CreateContext(&context2);
+	ASSERT_EQ(res, AMF_OK);
+	res = context2->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+	ASSERT_EQ(res, AMF_OK);
+	res = context2->GetOpenCLComputeFactory(&oclComputeFactory);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 3_CreateProgramsMT) {
-	factory->GetPrograms(&pPrograms1);
-	pPrograms1->RegisterKernelSource(&kernel, L"kernelIDName", "plus2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
-	factory->GetPrograms(&pPrograms2);
-	pPrograms2->RegisterKernelSource(&kernel, L"kernelIDName", "square", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	res = factory->GetPrograms(&pPrograms1);
+	ASSERT_EQ(res, AMF_OK);
+	res = pPrograms1->RegisterKernelSource(&kernel, L"kernelIDName", "plus2", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	ASSERT_EQ(res, AMF_OK);
+	res = factory->GetPrograms(&pPrograms2);
+	ASSERT_EQ(res, AMF_OK);
+	res = pPrograms2->RegisterKernelSource(&kernel, L"kernelIDName", "square", strlen(kernel_src), (amf_uint8*)kernel_src, NULL);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 4_InitializeDevicesMT) {
-	oclComputeFactory->GetDeviceAt(0, &pComputeDevice);
+	res = oclComputeFactory->GetDeviceAt(0, &pComputeDevice);
+	ASSERT_EQ(res, AMF_OK);
 	pComputeDevice->GetNativeContext();
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 5_GetComputeFromDeviceMT) {
-	pComputeDevice->CreateCompute(nullptr, &pCompute1);
-	pComputeDevice->CreateCompute(nullptr, &pCompute2);
+	res = pComputeDevice->CreateCompute(nullptr, &pCompute1);
+	ASSERT_EQ(res, AMF_OK);
+	res = pComputeDevice->CreateCompute(nullptr, &pCompute2);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 6_LoadKernelIntoComputeMT) {
-	pCompute1->GetKernel(kernel, &pKernel1);
-	pCompute2->GetKernel(kernel, &pKernel2);
+	res = pCompute1->GetKernel(kernel, &pKernel1);
+	ASSERT_EQ(res, AMF_OK);
+	res = pCompute2->GetKernel(kernel, &pKernel2);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 7_InitOpenCLInContextWithComputeNativeCommandQueueMT) {
-	context1->InitOpenCL(pCompute1->GetNativeCommandQueue());
-	context2->InitOpenCL(pCompute2->GetNativeCommandQueue());
+	res = context1->InitOpenCL(pCompute1->GetNativeCommandQueue());
+	ASSERT_EQ(res, AMF_OK);
+	res = context2->InitOpenCL(pCompute2->GetNativeCommandQueue());
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 8_AllocateBuffersMT) {
-	context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input);
-	context2->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input2);
-	context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &output);
-	context2->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &output2);
+	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input);
+	ASSERT_EQ(res, AMF_OK);
+	res = context2->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &input2);
+	ASSERT_EQ(res, AMF_OK);
+	res = context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &output);
+	ASSERT_EQ(res, AMF_OK);
+	res = context2->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &output2);
+	ASSERT_EQ(res, AMF_OK);
 	inputData = static_cast<float*>(input->GetNative());
 	inputData2 = static_cast<float*>(input2->GetNative());
 }
@@ -126,43 +150,62 @@ TEST_F(MultithreadCompute, 9_InitializeRandomDataMT) {
 }
 
 TEST_F(MultithreadCompute, 10_ConvertInputFromHostToOpenCLMT) {
-	input->Convert(AMF_MEMORY_OPENCL);
-	input2->Convert(AMF_MEMORY_OPENCL);
+	res = input->Convert(AMF_MEMORY_OPENCL);
+	ASSERT_EQ(res, AMF_OK);
+	res = input2->Convert(AMF_MEMORY_OPENCL);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 11_SetShaderArgumentsMT) {
-	pKernel1->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
-	pKernel1->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
-	pKernel1->SetArgInt32(3, 1024);
+	res = pKernel1->SetArgBuffer(0, output, AMF_ARGUMENT_ACCESS_WRITE);
+	ASSERT_EQ(res, AMF_OK);
+	res = pKernel1->SetArgBuffer(1, input, AMF_ARGUMENT_ACCESS_READ);
+	ASSERT_EQ(res, AMF_OK);
+	res = pKernel1->SetArgInt32(2, 1024);
+	ASSERT_EQ(res, AMF_OK);
 
-	pKernel2->SetArgBuffer(0, output2, AMF_ARGUMENT_ACCESS_WRITE);
-	pKernel2->SetArgBuffer(2, input2, AMF_ARGUMENT_ACCESS_READ);
-	pKernel2->SetArgInt32(3, 1024);
+	res = pKernel2->SetArgBuffer(0, output2, AMF_ARGUMENT_ACCESS_WRITE);
+	ASSERT_EQ(res, AMF_OK);
+	res = pKernel2->SetArgBuffer(1, input2, AMF_ARGUMENT_ACCESS_READ);
+	ASSERT_EQ(res, AMF_OK);
+	res = pKernel2->SetArgInt32(2, 1024);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 void launchSecondKernel() {
-	pKernel2->GetCompileWorkgroupSize(sizeLocal);
-	pKernel2->Enqueue(1, offset, sizeGlobal, NULL);
-	pCompute2->FlushQueue();
-	pCompute2->FinishQueue();
-	output->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
+	res = pKernel2->GetCompileWorkgroupSize(sizeLocal);
+	ASSERT_EQ(res, AMF_OK);
+	res = pKernel2->Enqueue(1, offset, sizeGlobal, NULL);
+	ASSERT_EQ(res, AMF_OK);
+	res = pCompute2->FlushQueue();
+	ASSERT_EQ(res, AMF_OK);
+	res = pCompute2->FinishQueue();
+	ASSERT_EQ(res, AMF_OK);
+	res = output->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 12_LaunchShaderMT) {
-	//threadObj = thread(launchSecondKernel);
-	pKernel1->GetCompileWorkgroupSize(sizeLocal);
-	pKernel1->Enqueue(1, offset, sizeGlobal, NULL);
-	pCompute1->FlushQueue();
-	pCompute1->FinishQueue();
+	threadObj = thread(launchSecondKernel);
+	res = pKernel1->GetCompileWorkgroupSize(sizeLocal);
+	ASSERT_EQ(res, AMF_OK);
+	res = pKernel1->Enqueue(1, offset, sizeGlobal, NULL);
+	ASSERT_EQ(res, AMF_OK);
+	res = pCompute1->FlushQueue();
+	ASSERT_EQ(res, AMF_OK);
+	res = pCompute1->FinishQueue();
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 13_MoveResultToHostMT) {
-	output->MapToHost((void**)&outputData1, 0, 1024 * sizeof(float), true);
-	output2->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
+	res = output->MapToHost((void**)&outputData1, 0, 1024 * sizeof(float), true);
+	ASSERT_EQ(res, AMF_OK);
+	res = output2->MapToHost((void**)&outputData2, 0, 1024 * sizeof(float), true);
+	ASSERT_EQ(res, AMF_OK);
 }
 
 TEST_F(MultithreadCompute, 14_JoinThreadsMT) {
-	//threadObj.join();
+	threadObj.join();
 }
 
 TEST_F(MultithreadCompute, 15_CompareResultToExpectedMT) {
@@ -170,8 +213,8 @@ TEST_F(MultithreadCompute, 15_CompareResultToExpectedMT) {
 	{
 		EXPECT_LE(abs(expectedData[k] - outputData1[k]), 0.01);
 	}
-	//for (int k = 0; k < 1024; k++)
-	//{
-	//	EXPECT_LE(abs(expectedData2[k] - outputData2[k]), 0.01);
-	//}
+	for (int k = 0; k < 1024; k++)
+	{
+		EXPECT_LE(abs(expectedData2[k] - outputData2[k]), 0.01);
+	}
 }
