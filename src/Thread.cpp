@@ -267,7 +267,6 @@ TEST_F(Thread, amf_restore_timer_precision) {
 	amf_pts clock = amf_high_precision_clock();
 	ASSERT_NE(clock, NULL);
 	amf_restore_timer_precision();
-	amf_load_library
 }
 /*
 TEST_F(Thread, amf_load_library) {
