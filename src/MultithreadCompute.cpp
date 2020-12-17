@@ -2,48 +2,57 @@
 #include <thread>
 
 // Shared Variables //
+static thread threadObj;
+
 static AMFFactoryHelper helper;
-static AMFContextPtr context = NULL;
 
-static AMFComputeFactoryPtr oclComputeFactory = NULL;
-static AMFFactory* factory = NULL;
+static AMFContextPtr context1;
+static AMFContextPtr context2;
 
-static AMF_RESULT res = AMF_OK;
-static AMFPrograms* pPrograms = NULL;
-static AMFComputeDevicePtr pComputeDevice = NULL;
+static AMFComputeFactoryPtr oclComputeFactory;
+static AMFFactory* factory;
+static AMF_RESULT res;
+
+static AMFPrograms* pPrograms1;
+static AMFPrograms* pPrograms2;
+static AMFComputeDevicePtr pComputeDevice;
 
 static AMF_KERNEL_ID kernel = 0;
-static AMFComputeKernelPtr pKernel = NULL;
-static AMFComputePtr pCompute = NULL;
+static AMFComputePtr pCompute1;
+static AMFComputePtr pCompute2;
+static AMFComputeKernelPtr pKernel1;
+static AMFComputeKernelPtr pKernel2;
 static const char* kernel_src = "\n" \
-"__kernel void square2( __global float* output, __global float* input, \n" \
+"__kernel void square( __global float* output, __global float* input, \n" \
 " const unsigned int count) {            \n" \
 " int i = get_global_id(0);              \n" \
 " if(i < count) \n" \
 " output[i] = input[i] * input[i]; \n" \
 "}                     \n" \
-"__kernel void multiplication(__global float* output, __global float* input, __global float* input2, \n" \
+"__kernel void plus2(__global float* output, __global float* input, \n" \
 " const unsigned int count) {            \n" \
 " int i = get_global_id(0);              \n" \
 " if(i < count) \n" \
-" output[i] = input[i] * input2[i]; \n" \
+" output[i] = input[i] + 2.0; \n" \
 "}                     \n";
 
 static AMFBuffer* input = NULL;
 static AMFBuffer* input2 = NULL;
 static AMFBuffer* output = NULL;
+static AMFBuffer* output2 = NULL;
 
-static float* inputData = NULL;
-static float* inputData2 = NULL;
-
-static float* outputData2 = NULL;
-
+static float* inputData;
+static float* inputData2;
 static float* expectedData = new float[1024];
-static int deviceCount = NULL;
+static float* expectedData2 = new float[1024];
 
+static int deviceCount;
 static amf_size sizeLocal[3] = { 1024, 0, 0 };
 static amf_size sizeGlobal[3] = { 1024, 0, 0 };
 static amf_size offset[3] = { 0, 0, 0 };
+
+static float* outputData1 = NULL;
+static float* outputData2 = NULL;
 
 static chrono::time_point<chrono::system_clock> startTime;
 
