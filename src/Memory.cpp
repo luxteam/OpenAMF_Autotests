@@ -95,7 +95,7 @@ TEST_F(AMF_Memory, getExpectedMemoryHostType) {
 	EXPECT_EQ(smartptr->GetMemoryType(), AMF_MEMORY_HOST);
 }
 
-TEST_F(AMF_Memory, DISABLED_getExpectedMemoryTypeOpenCL){
+TEST_F(AMF_Memory, getExpectedMemoryTypeOpenCL){
 	AMF_RESULT res;
 	AMFBufferPtr smartptr;
 	res = context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &smartptr);
