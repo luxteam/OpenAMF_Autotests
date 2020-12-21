@@ -1,6 +1,5 @@
 #ifdef ENABLE_METAL
 #include "Autotests.h"
-#define ENABLE_METAL
 
 static AMFFactoryHelper helper;
 static AMFContextPtr context = NULL;
