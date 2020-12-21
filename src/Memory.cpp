@@ -236,7 +236,8 @@ TEST_F(AMF_Memory, getDurationWithSetDurationChecking) {
 	EXPECT_EQ(smartptr->GetDuration(), 3333);
 }
 
-//--------------------AMFBuffers--------------------
+//--------------------Buffers--------------------
+//+++++AMFBuffer+++++
 
 TEST_F(AMF_Memory, bufferSetSizeDontCrashWithCorrectSize) {
 	AMF_RESULT res;
@@ -334,6 +335,8 @@ TEST_F(AMF_Memory, DISABLED_bufferGetNativeWithNonMemoryHost) {
 	EXPECT_NE(native, nullptr);
 }
 
+//+++++AMFBufferObserver+++++
+
 TEST_F(AMF_Memory, DISABLED_bufferAddObserverThworsNothing) {
 	AMF_RESULT res;
 	AMFBufferPtr smartptr;
@@ -358,6 +361,8 @@ TEST_F(AMF_Memory, DISABLED_bufferRemoveObserverThworsNothing) {
 /*TEST_F(AMF_Memory, bufferOnBufferDataRelease) {
 * }
 */
+
+//+++++AMFAudioBuffer+++++
 
 TEST_F(AMF_Memory, audioBufferGetSize) {
 	AMF_RESULT res;
@@ -434,6 +439,8 @@ TEST_F(AMF_Memory, audioBufferGetChannelLayout) {
 	*/
 }
 
+//+++++AMFAudioBufferObserver+++++
+
 TEST_F(AMF_Memory, audioBufferAddObserverThworsNothing) {
 	AMF_RESULT res;
 	AMFAudioBufferPtr aubuf;
@@ -462,6 +469,9 @@ TEST_F(AMF_Memory, audioBufferRemoveObserverThworsNothing) {
 /*TEST_F(AMF_Memory, audioBufferOnBufferDataRelease) {
 * }
 */
+
+//--------------------Surfaces--------------------
+//+++++AMFSurface+++++
 
 TEST_F(AMF_Memory, surfaceGetFormat) {
 	AMF_RESULT res;
@@ -540,6 +550,8 @@ TEST_F(AMF_Memory, surfaceSetCrop) {
 	*/
 }
 
+//+++++AMFSurfaceObserver+++++
+
 TEST_F(AMF_Memory, surfaceAddObserverThworsNothing) {
 	AMF_RESULT res;
 	AMFSurfacePtr sur;
@@ -568,6 +580,8 @@ TEST_F(AMF_Memory, surfaceRemoveObserverThworsNothing) {
 /*TEST_F(AMF_Memory,surfaceOnBufferDataRelease) {
 * }
 */
+
+//+++++AMFPlane+++++
 
 TEST_F(AMF_Memory, planeGetType) {
 	AMF_RESULT res;
