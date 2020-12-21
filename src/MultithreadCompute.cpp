@@ -22,19 +22,20 @@ static AMFComputePtr pCompute1;
 static AMFComputePtr pCompute2;
 static AMFComputeKernelPtr pKernel1;
 static AMFComputeKernelPtr pKernel2;
-static const char* kernel_src = "\n" \
-"__kernel void square( __global float* output, __global float* input, \n" \
-" const unsigned int count) {            \n" \
-" int i = get_global_id(0);              \n" \
-" if(i < count) \n" \
-" output[i] = input[i] * input[i]; \n" \
-"}                     \n" \
-"__kernel void plus2(__global float* output, __global float* input, \n" \
-" const unsigned int count) {            \n" \
-" int i = get_global_id(0);              \n" \
-" if(i < count) \n" \
-" output[i] = input[i] + 2.0; \n" \
-"}                     \n";
+static const char* kernel_src = R"(
+__kernel void square( __global float* output, __global float* input, 
+ const unsigned int count) {            
+ int i = get_global_id(0);              
+ if(i < count) 
+ output[i] = input[i] * input[i]; 
+}                     
+__kernel void plus2(__global float* output, __global float* input, 
+ const unsigned int count) {            
+ int i = get_global_id(0);              
+ if(i < count) 
+ output[i] = input[i] + 2.0; 
+}
+)";
 
 static AMFBuffer* input = NULL;
 static AMFBuffer* input2 = NULL;
@@ -227,4 +228,6 @@ TEST_F(MultithreadCompute, 15_CompareResultToExpectedMT) {
 	{
 		ASSERT_LE(abs(expectedData2[k] - outputData2[k]), 0.01);
 	}
+	delete expectedData;
+	delete expectedData2;
 }

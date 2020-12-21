@@ -14,19 +14,20 @@ static AMFComputeDevicePtr pComputeDevice = NULL;
 static AMF_KERNEL_ID kernel = 0;
 static AMFComputeKernelPtr pKernel = NULL;
 static AMFComputePtr pCompute = NULL;
-static const char* kernel_src = "\n" \
-"__kernel void square2( __global float* output, __global float* input, \n" \
-" const unsigned int count) {            \n" \
-" int i = get_global_id(0);              \n" \
-" if(i < count) \n" \
-" output[i] = input[i] * input[i]; \n" \
-"}                     \n" \
-"__kernel void multiplication(__global float* output, __global float* input, __global float* input2, \n" \
-" const unsigned int count) {            \n" \
-" int i = get_global_id(0);              \n" \
-" if(i < count) \n" \
-" output[i] = input[i] * input2[i]; \n" \
-"}                     \n";
+static const char* kernel_src = R"(
+__kernel void square2( __global float* output, __global float* input,
+ const unsigned int count) {
+ int i = get_global_id(0);
+ if(i < count)
+ output[i] = input[i] * input[i];
+}
+__kernel void multiplication(__global float* output, __global float* input, __global float* input2,
+ const unsigned int count) {
+ int i = get_global_id(0);
+ if(i < count)
+ output[i] = input[i] * input2[i];
+}
+)";
 
 static AMFBuffer* input = NULL;
 static AMFBuffer* input2 = NULL;
@@ -166,5 +167,6 @@ TEST_F(AMF_Compute_Metal, 14_CompareResultToExpected_Metal) {
 	{
 		ASSERT_LE(abs(expectedData[k] - outputData2[k]), 0.01);
 	}
+	delete expectedData;
 }
 #endif
