@@ -92,6 +92,7 @@ SET(SOURCES
     src/AMF_STL.cpp
     src/MultithreadCompute.cpp
     src/Thread.cpp
+    src/Memory.cpp
     )
 
 include_directories(../../include)

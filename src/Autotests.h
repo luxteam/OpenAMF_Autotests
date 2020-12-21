@@ -13,6 +13,7 @@
 #include <chrono>
 #include <ctime>  
 #include <cmath>
+#include <thread>
 using namespace std;
 using namespace amf;
 
@@ -29,6 +30,82 @@ struct AllocationMetrics {
 	uint32_t CurrentUsage();
 
 	uint32_t CurrentPointers();
+};
+
+struct SharedVariables {
+	thread threadObj;
+	AMFFactoryHelper helper;
+	AMFContextPtr context1 = NULL;
+	AMFContextPtr context2 = NULL;
+	AMFComputeFactoryPtr oclComputeFactory = NULL;
+	AMFComputeFactoryPtr metalComputeFactory = NULL;
+	AMFFactory* factory = NULL;
+	AMF_RESULT res = AMF_OK;
+	AMFPrograms* pPrograms1 = NULL;
+	AMFPrograms* pPrograms2 = NULL;
+	AMFComputeDevicePtr pComputeDevice = NULL;
+	AMF_KERNEL_ID kernel = 0;
+	AMFComputePtr pCompute1 = NULL;
+	AMFComputePtr pCompute2 = NULL;
+	AMFComputeKernelPtr pKernel1 = NULL;
+	AMFComputeKernelPtr pKernel2 = NULL;
+	AMFBuffer* input = NULL;
+	AMFBuffer* input2 = NULL;
+	AMFBuffer* output = NULL;
+	AMFBuffer* output2 = NULL;
+	float* inputData = NULL;
+	float* inputData2 = NULL;
+	float* expectedData = new float[1024];
+	float* expectedData2 = new float[1024];
+	int deviceCount = NULL;
+	amf_size sizeLocal[3] = { 1024, 0, 0 };
+	amf_size sizeGlobal[3] = { 1024, 0, 0 };
+	amf_size offset[3] = { 0, 0, 0 };
+	float* outputData1 = NULL;
+	float* outputData2 = NULL;
+	const char* kernel_src = R"(
+	__kernel void square2( __global float* output, __global float* input,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input[i];
+	}
+	__kernel void multiplication(__global float* output, __global float* input, __global float* input2,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input2[i];
+	}
+	)";
+	const char* kernel_src_metal = R"(
+	__kernel void square2( __global float* output, __global float* input,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input[i];
+	}
+	__kernel void multiplication(__global float* output, __global float* input, __global float* input2,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input2[i];
+	}
+	)";
+	const char* kernel_src_multithread = R"(
+	__kernel void square( __global float* output, __global float* input, 
+	const unsigned int count) {            
+	int i = get_global_id(0);              
+	if(i < count) 
+	output[i] = input[i] * input[i]; 
+	}                     
+	__kernel void plus2(__global float* output, __global float* input, 
+	const unsigned int count) {            
+	int i = get_global_id(0);              
+	if(i < count) 
+	output[i] = input[i] + 2.0; 
+	}
+	)";
+	chrono::time_point<chrono::system_clock> startTime;
 };
 
 void* operator new(size_t size);
