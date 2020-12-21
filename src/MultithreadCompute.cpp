@@ -221,10 +221,10 @@ TEST_F(MultithreadCompute, 14_JoinThreadsMT) {
 TEST_F(MultithreadCompute, 15_CompareResultToExpectedMT) {
 	for (int k = 0; k < 1024; k++)
 	{
-		EXPECT_LE(abs(expectedData[k] - outputData1[k]), 0.01);
+		ASSERT_LE(abs(expectedData[k] - outputData1[k]), 0.01);
 	}
 	for (int k = 0; k < 1024; k++)
 	{
-		EXPECT_LE(abs(expectedData2[k] - outputData2[k]), 0.01);
+		ASSERT_LE(abs(expectedData2[k] - outputData2[k]), 0.01);
 	}
 }

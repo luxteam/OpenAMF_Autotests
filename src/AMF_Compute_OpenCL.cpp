@@ -164,6 +164,6 @@ TEST_F(AMF_Compute_OpenCL, 13_MoveResultToHost_OCL) {
 TEST_F(AMF_Compute_OpenCL, 14_CompareResultToExpected_OCL) {
 	for (int k = 0; k < 1024; k++)
 	{
-		EXPECT_LE(abs(expectedData[k] - outputData2[k]), 0.01);
+		ASSERT_LE(abs(expectedData[k] - outputData2[k]), 0.01);
 	}
 }
