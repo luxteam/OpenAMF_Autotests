@@ -358,7 +358,7 @@ TEST_F(AMF_Memory, DISABLED_bufferAddObserverThworsNothing) {
 	EXPECT_EQ(res, AMF_OK);
 	EXPECT_NE(smartptr, nullptr);
 	//TestBufferObserver testBufferObserver(smartptr);
-	EXPECT_NO_THROW(smartptr->AddObserver(&testBufferObserver));
+	//EXPECT_NO_THROW(smartptr->AddObserver(&testBufferObserver));
 	smartptr->Release();
 }
 
