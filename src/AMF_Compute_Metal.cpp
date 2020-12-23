@@ -1,5 +1,6 @@
-#ifdef __APPLE__
+#ifdef ENABLE_METAL
 #include "Autotests.h"
+#define ENABLE_METAL
 
 static SharedVariables variables;
 
