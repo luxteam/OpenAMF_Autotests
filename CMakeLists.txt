@@ -8,6 +8,11 @@ enable_language(CXX)
 enable_testing()
 add_subdirectory(googletest)
 
+# VERSION not allowed unless CMP0048 is set to NEW
+if(POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
+
 if(NOT WIN32)
   #message(SEND_ERROR "ERROR: Test are prepared for Windows ONLY!")
 endif()
@@ -86,7 +91,8 @@ SET(SOURCES
     src/AMF_VariantStruct.cpp
     src/AMF_STL.cpp
     src/MultithreadCompute.cpp
-    src/Memory.cpp
+    src/Thread.cpp
+    src/AMF_Memory.cpp
     )
 
 include_directories(../../include)

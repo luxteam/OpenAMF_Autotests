@@ -63,32 +63,48 @@ struct SharedVariables {
 	amf_size offset[3] = { 0, 0, 0 };
 	float* outputData1 = NULL;
 	float* outputData2 = NULL;
-	const char* kernel_src = "\n" \
-		"__kernel void square( __global float* output, __global float* input, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] * input[i]; \n" \
-		"}                     \n" \
-		"__kernel void plus2(__global float* output, __global float* input, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] + 2.0; \n" \
-		"}                     \n";
-	const char* kernel_src_metal = "\n" \
-		"__kernel void square2( __global float* output, __global float* input, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] * input[i]; \n" \
-		"}                     \n" \
-		"__kernel void multiplication(__global float* output, __global float* input, __global float* input2, \n" \
-		" const unsigned int count) {            \n" \
-		" int i = get_global_id(0);              \n" \
-		" if(i < count) \n" \
-		" output[i] = input[i] * input2[i]; \n" \
-		"}                     \n";
+	const char* kernel_src = R"(
+	__kernel void square2( __global float* output, __global float* input,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input[i];
+	}
+	__kernel void multiplication(__global float* output, __global float* input, __global float* input2,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input2[i];
+	}
+	)";
+	const char* kernel_src_metal = R"(
+	__kernel void square2( __global float* output, __global float* input,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input[i];
+	}
+	__kernel void multiplication(__global float* output, __global float* input, __global float* input2,
+	const unsigned int count) {
+	int i = get_global_id(0);
+	if(i < count)
+	output[i] = input[i] * input2[i];
+	}
+	)";
+	const char* kernel_src_multithread = R"(
+	__kernel void square( __global float* output, __global float* input, 
+	const unsigned int count) {            
+	int i = get_global_id(0);              
+	if(i < count) 
+	output[i] = input[i] * input[i]; 
+	}                     
+	__kernel void plus2(__global float* output, __global float* input, 
+	const unsigned int count) {            
+	int i = get_global_id(0);              
+	if(i < count) 
+	output[i] = input[i] + 2.0; 
+	}
+	)";
 	chrono::time_point<chrono::system_clock> startTime;
 };
 
