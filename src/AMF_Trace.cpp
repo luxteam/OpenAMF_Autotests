@@ -1,10 +1,6 @@
 #include "Autotests.h"
 
-static AMFFactoryHelper helper;
-static AMFContextPtr context1;
-static AMFFactory* factory;
-static AMF_RESULT res;
-static chrono::time_point<chrono::system_clock> startTime;
+static SharedVariables variables;
 
 struct AMF_Trace : testing::Test {
 	static void SetUpTestCase() {
@@ -16,36 +12,36 @@ struct AMF_Trace : testing::Test {
 	}
 
 	AMF_Trace() {
-		startTime = initiateTestLog();
-		helper.Init();
-		factory = helper.GetFactory();
-		factory->CreateContext(&context1);
-		context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+		variables.startTime = initiateTestLog();
+		variables.helper.Init();
+		variables.factory = variables.helper.GetFactory();
+		variables.factory->CreateContext(&variables.context1);
+		variables.context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
 	}
 
 	~AMF_Trace() {
-		context1.Release();
-		terminateTestLog(startTime);
+		variables.context1.Release();
+		terminateTestLog(variables.startTime);
 	}
 };
 
 TEST_F(AMF_Trace, AMFTrace_SetPath) {
 	AMFTrace* trace;
-	factory->GetTrace(&trace);
-	res = trace->SetPath(L"test");
-	EXPECT_EQ(res, AMF_OK);
+	variables.factory->GetTrace(&trace);
+	variables.res = trace->SetPath(L"test");
+	EXPECT_EQ(variables.res, AMF_OK);
 }
 
 TEST_F(AMF_Trace, DISABLED_AMFTrace_GetPath) {
 	AMFTrace* trace;
-	res = factory->GetTrace(&trace);
-	EXPECT_EQ(res, AMF_OK);
-	res = trace->SetPath(L"test");
-	EXPECT_EQ(res, AMF_OK);
+	variables.res = variables.factory->GetTrace(&trace);
+	EXPECT_EQ(variables.res, AMF_OK);
+	variables.res = trace->SetPath(L"test");
+	EXPECT_EQ(variables.res, AMF_OK);
 	amf_size* size;
 	*size = (amf_size)30;
 	wchar_t* str = new wchar_t[1000];
-	res = trace->GetPath(str, size);
-	EXPECT_EQ(res, AMF_OK);
+	variables.res = trace->GetPath(str, size);
+	EXPECT_EQ(variables.res, AMF_OK);
 	EXPECT_EQ(str, L"test");
 }

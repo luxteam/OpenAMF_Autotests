@@ -1,18 +1,5 @@
 ﻿#include "Autotests.h"
 
-struct TestBufferObserver: public AMFBufferObserver
-{
-	AMFBuffer* mBuffer2Observe(void*);
-
-	/*TestBufferObserver(AMFBuffer* pBufferToObserve):
-		mBuffer2Observe(pBufferToObserve) { }
-
-	void OnBufferDataRelease(AMFBuffer* pBuffer) override
-	{
-		bool test = (pBuffer == pBufferToObserve);
-	}*/
-};
-
 struct AMF_Memory : testing::Test {
 	AMFFactoryHelper helper;
 	AMFContextPtr context1;
@@ -108,7 +95,7 @@ TEST_F(AMF_Memory, getExpectedMemoryHostType) {
 	EXPECT_EQ(smartptr->GetMemoryType(), AMF_MEMORY_HOST);
 }
 
-TEST_F(AMF_Memory, getExpectedMemoryTypeOpenCL){
+TEST_F(AMF_Memory, DISABLED_getExpectedMemoryTypeOpenCL){
 	AMF_RESULT res;
 	AMFBufferPtr smartptr;
 	res = context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &smartptr);
@@ -353,13 +340,11 @@ TEST_F(AMF_Memory, DISABLED_bufferGetNativeWithNonMemoryHost) {
 TEST_F(AMF_Memory, DISABLED_bufferAddObserverThworsNothing) {
 	AMF_RESULT res;
 	AMFBufferPtr smartptr;
-	//AMFBufferObserver* obs = NULL;
+	AMFBufferObserver* obs = NULL;
 	res = context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &smartptr);
 	EXPECT_EQ(res, AMF_OK);
 	EXPECT_NE(smartptr, nullptr);
-	//TestBufferObserver testBufferObserver(smartptr);
-	//EXPECT_NO_THROW(smartptr->AddObserver(&testBufferObserver));
-	smartptr->Release();
+	EXPECT_NO_THROW(smartptr->AddObserver(obs));
 }
 
 TEST_F(AMF_Memory, DISABLED_bufferRemoveObserverThworsNothing) {
