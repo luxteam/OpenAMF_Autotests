@@ -16,21 +16,17 @@ struct AMF_Memory : testing::Test {
 
 	AMF_Memory() {
 		AMF_RESULT amr = helper.Init();
-		if (amr != AMF_OK) {
-			exit(1);
-		}
+		assert(amr, AMF_OK);
+
 		factory = helper.GetFactory();
-		if (factory == nullptr) {
-			exit(1);
-		}
+		assert(factory, !nullptr);
+
 		amr = factory->CreateContext(&context1);
-		if (amr != AMF_OK) {
-			exit(1);
-		}
+		assert(amr, AMF_OK);
+
 		amr = context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
-		if (amr != AMF_OK) {
-			exit(1);
-		}
+		assert(amr, AMF_OK);
+
 		startTime = initiateTestLog();
 	}
 
