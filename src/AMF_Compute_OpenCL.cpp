@@ -101,7 +101,7 @@ TEST_F(AMF_Compute_OpenCL, 11_SetShaderArguments_OCL) {
 	ASSERT_EQ(variables.res, AMF_OK);
 }
 
-TEST_F(AMF_Compute_OpenCL, 12_LaunchShader_OCL) {
+TEST_F(AMF_Compute_OpenCL, DISABLED_12_LaunchShader_OCL) {
 	variables.res = variables.pKernel1->GetCompileWorkgroupSize(variables.sizeLocal);
 	ASSERT_EQ(variables.res, AMF_OK);
 	variables.res = variables.pKernel1->Enqueue(1, variables.offset, variables.sizeGlobal, NULL);
