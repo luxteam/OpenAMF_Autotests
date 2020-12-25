@@ -40,7 +40,7 @@ struct SharedVariables {
 	AMFComputeFactoryPtr oclComputeFactory = NULL;
 	AMFComputeFactoryPtr metalComputeFactory = NULL;
 	AMFFactory* factory = NULL;
-	AMF_RESULT res = AMF_OK;
+	AMF_RESULT res = AMF_NOT_SUPPORTED;
 	AMFPrograms* pPrograms1 = NULL;
 	AMFPrograms* pPrograms2 = NULL;
 	AMFComputeDevicePtr pComputeDevice = NULL;
@@ -53,6 +53,10 @@ struct SharedVariables {
 	AMFBuffer* input2 = NULL;
 	AMFBuffer* output = NULL;
 	AMFBuffer* output2 = NULL;
+	AMFBufferPtr smartptr;
+	AMFSurfacePtr surface;
+	AMFAudioBufferPtr aubuf;
+	AMFPlanePtr plane;
 	float* inputData = NULL;
 	float* inputData2 = NULL;
 	float* expectedData = new float[1024];
