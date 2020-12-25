@@ -196,7 +196,7 @@ TEST_F(Thread, amf_reset_event) {
 TEST_F(Thread, amf_wait_for_event_timeout) {
 	EXPECT_NO_THROW(amf_wait_for_event_timeout(event, 10));
 }
-
+/*
 TEST_F(Thread, DISABLED_amf_open_mutex) {
 	threadObj = thread(inc);
 	AMFMutex mutex = amf_open_mutex(L"\\global1");
@@ -208,7 +208,7 @@ TEST_F(Thread, DISABLED_amf_open_mutex) {
 	EXPECT_TRUE(x == 18 || x == 16);
 	x = 5;
 }
-
+*/
 TEST_F(Thread, amf_delete_mutex) {
 	res_bool = amf_delete_mutex(mutex2);
 	ASSERT_EQ(res_bool, true);
