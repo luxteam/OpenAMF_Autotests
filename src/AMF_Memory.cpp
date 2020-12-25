@@ -78,12 +78,35 @@ TEST_F(AMF_Memory, getExpectedMemoryHostType) {
 	ASSERT_EQ(variables.smartptr->GetMemoryType(), AMF_MEMORY_HOST);
 }
 //todo
-TEST_F(AMF_Memory, DISABLED_getExpectedMemoryTypeOpenCL){
+TEST_F(AMF_Memory, getExpectedMemoryTypeOpenCL){
+	//init opencl started
+	variables.res = g_AMFFactory.Init();
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.res = variables.helper.Init();
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.factory = variables.helper.GetFactory();
+	ASSERT_NE(variables.factory, nullptr);
+	variables.res = variables.factory->CreateContext(&variables.context1);
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.res = variables.context1->SetProperty(AMF_CONTEXT_DEVICE_TYPE, AMF_CONTEXT_DEVICE_TYPE_GPU);
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.res = variables.context1->GetOpenCLComputeFactory(&variables.oclComputeFactory);
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.res = variables.factory->GetPrograms(&variables.pPrograms1);
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.res = variables.pPrograms1->RegisterKernelSource(&variables.kernel, L"kernelIDName", "multiplication", strlen(variables.kernel_src), (amf_uint8*)variables.kernel_src, NULL);
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.res = variables.oclComputeFactory->GetDeviceAt(0, &variables.pComputeDevice);
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.pComputeDevice->GetNativeContext();
+	ASSERT_NE(variables.pComputeDevice, nullptr);
 	variables.res = variables.pComputeDevice->CreateCompute(nullptr, &variables.pCompute1);
+	ASSERT_EQ(variables.res, AMF_OK);
+	variables.res = variables.pCompute1->GetKernel(variables.kernel, &variables.pKernel1);
 	ASSERT_EQ(variables.res, AMF_OK);
 	variables.res = variables.context1->InitOpenCL(variables.pCompute1->GetNativeCommandQueue());
 	ASSERT_EQ(variables.res, AMF_OK);
-	ASSERT_EQ(variables.res, AMF_OK);
+	//init opencl finished
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &variables.smartptr);
 	ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
