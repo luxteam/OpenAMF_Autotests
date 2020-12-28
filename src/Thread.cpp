@@ -1,7 +1,7 @@
 #include "Autotests.h"
 #include <thread>
 
-static AMFMutex mutex1 = amf_create_mutex(false, L"/test1");
+static amf_handle mutex1 = amf_create_mutex(false, L"/test1");
 static amf_handle mutex2 = amf_create_mutex(false, L"/test2");
 static amf_handle crit_section = amf_create_critical_section();
 static amf_handle semaphore = amf_create_semaphore(0, 2, L"/test3");
