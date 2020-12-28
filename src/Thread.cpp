@@ -5,7 +5,9 @@ static amf_handle mutex1 = amf_create_mutex(false, L"/test1");
 static amf_handle mutex2 = amf_create_mutex(false, L"/test2");
 static amf_handle crit_section = amf_create_critical_section();
 static amf_handle semaphore = amf_create_semaphore(0, 2, L"/test3");
+#ifdef _WIN32
 static amf_handle event = amf_create_event(false, true, L"test_event");
+#endif
 static amf_long x = 5;
 static bool res_bool = true;
 
@@ -138,11 +140,13 @@ TEST_F(Thread, DISABLED_amf_delete_critical_section) {
 	crit_section = amf_create_critical_section();
 }
 
+#ifdef _WIN32
 void eventTest() {
 	res_bool = amf_wait_for_event(event, 100);
 	ASSERT_EQ(res_bool, true);
 	x *= 2;
 }
+#endif
 
 void printThread2() {
 	for (int i = 0; i < 100; i++)
@@ -184,6 +188,7 @@ TEST_F(Thread, amf_set_event) {
 	x = 5;
 }
 
+#ifdef _WIN32
 TEST_F(Thread, amf_delete_event) {
 	res_bool = amf_delete_event(event);
 	ASSERT_EQ(res_bool, true);
@@ -196,6 +201,7 @@ TEST_F(Thread, amf_reset_event) {
 TEST_F(Thread, amf_wait_for_event_timeout) {
 	EXPECT_NO_THROW(amf_wait_for_event_timeout(event, 10));
 }
+#endif
 /*
 TEST_F(Thread, DISABLED_amf_open_mutex) {
 	threadObj = thread(inc);
