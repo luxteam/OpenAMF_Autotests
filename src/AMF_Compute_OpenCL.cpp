@@ -26,7 +26,6 @@ TEST_F(AMF_Compute_OpenCL, 1_InitializateFactory_OCL) {
 	variables.res = variables.helper.Init();
 	ASSERT_EQ(variables.res, AMF_OK);
 	variables.factory = variables.helper.GetFactory();
-	ASSERT_NE(variables.factory, NULL);
 }
 
 TEST_F(AMF_Compute_OpenCL, 2_CreateContext_OCL) {
@@ -49,7 +48,6 @@ TEST_F(AMF_Compute_OpenCL, 4_InitializeDevice_OCL) {
 	variables.res = variables.oclComputeFactory->GetDeviceAt(0, &variables.pComputeDevice);
 	ASSERT_EQ(variables.res, AMF_OK);
 	variables.pComputeDevice->GetNativeContext();
-	ASSERT_NE(variables.pComputeDevice, NULL);
 }
 
 TEST_F(AMF_Compute_OpenCL, 5_GetComputeFromDevice_OCL) {
