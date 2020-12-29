@@ -29,7 +29,9 @@ struct Thread : testing::Test {
 		ASSERT_NE(mutex2, (amf_handle)NULL);
 		ASSERT_NE(crit_section, (amf_handle)NULL);
 		ASSERT_NE(semaphore, (amf_handle)NULL);
+#ifdef _WIN32
 		ASSERT_NE(event, (amf_handle)NULL);
+#endif
 	}
 
 	Thread() {
@@ -177,7 +179,7 @@ TEST_F(Thread, recursive_mutex) {
 	man3.join();
 	EXPECT_FALSE(true);
 }
-
+#ifdef _WIN32
 TEST_F(Thread, amf_set_event) {
 	threadObj = thread(eventTest);
 	x++;
@@ -187,8 +189,6 @@ TEST_F(Thread, amf_set_event) {
 	EXPECT_EQ(x, 12);
 	x = 5;
 }
-
-#ifdef _WIN32
 TEST_F(Thread, amf_delete_event) {
 	res_bool = amf_delete_event(event);
 	ASSERT_EQ(res_bool, true);
