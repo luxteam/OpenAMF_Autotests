@@ -34,52 +34,7 @@ struct AMF_Memory : testing::Test {
 	}
 };
 
-//--------------------AMFData--------------------
-
-TEST_F(AMF_Memory, DISABLED_getDataTypeFromMemoryUnknown) {
-	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_UNKNOWN, 1024 * sizeof(float), &variables.smartptr);
-	ASSERT_EQ(variables.res, AMF_OK);
-	ASSERT_NE(variables.smartptr, nullptr);
-	ASSERT_ANY_THROW(variables.smartptr->GetDataType());
-}
-
-TEST_F(AMF_Memory, getExpectedDataBufferType) {
-	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
-	ASSERT_EQ(variables.res, AMF_OK);
-	ASSERT_NE(variables.smartptr, nullptr);
-	ASSERT_EQ(variables.smartptr->GetDataType(), AMF_DATA_BUFFER);
-}
-
-TEST_F(AMF_Memory, getExpectedDataSurfaceType) {
-	variables.res = variables.context1->AllocSurface(AMF_MEMORY_DX9, AMF_SURFACE_NV12, 1024 * sizeof(float), 1024 * sizeof(float), &variables.surface);
-	ASSERT_EQ(variables.res, AMF_NOT_IMPLEMENTED);
-	//ASSERT_NE(variables.surface, nullptr);
-	//ASSERT_EQ(variables.res, AMF_OK);
-	//ASSERT_EQ(variables.surface->GetDataType(), AMF_DATA_SURFACE);
-}
-
-TEST_F(AMF_Memory, getExpectedDataAudioBufferType) {
-	variables.res = variables.context1->AllocAudioBuffer(AMF_MEMORY_HOST, AMFAF_S32, 1024 * sizeof(amf_int32), 1024, 16, &variables.aubuf);
-	ASSERT_EQ(variables.res, AMF_NOT_IMPLEMENTED);
-	//ASSERT_NE(variables.aubuf, nullptr);
-	//ASSERT_EQ(variables.res, AMF_OK);
-	//ASSERT_EQ(variables.aubuf->GetDataType(), AMF_DATA_AUDIO_BUFFER);
-}
-
-/*TEST_F(AMF_Memory, getExpectedDataUserType) {
-*
-	ASSERT_EQ(->GetDataType(), AMF_Memory_USER);
-}*/
-
-TEST_F(AMF_Memory, getExpectedMemoryHostType) {
-	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
-	ASSERT_EQ(variables.res, AMF_OK);
-	ASSERT_NE(variables.smartptr, nullptr);
-	ASSERT_EQ(variables.smartptr->GetMemoryType(), AMF_MEMORY_HOST);
-}
-//todo
-TEST_F(AMF_Memory, getExpectedMemoryTypeOpenCL){
-	//init opencl started
+static void initOpenCL() {
 	variables.res = g_AMFFactory.Init();
 	ASSERT_EQ(variables.res, AMF_OK);
 	variables.res = variables.helper.Init();
@@ -106,13 +61,63 @@ TEST_F(AMF_Memory, getExpectedMemoryTypeOpenCL){
 	ASSERT_EQ(variables.res, AMF_OK);
 	variables.res = variables.context1->InitOpenCL(variables.pCompute1->GetNativeCommandQueue());
 	ASSERT_EQ(variables.res, AMF_OK);
-	//init opencl finished
+}
+
+//--------------------AMFData--------------------
+
+TEST_F(AMF_Memory, DISABLED_getDataTypeFromMemoryUnknown) {
+	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_UNKNOWN, 1024 * sizeof(float), &variables.smartptr);
+	ASSERT_EQ(variables.res, AMF_OK);
+	ASSERT_NE(variables.smartptr, nullptr);
+	ASSERT_ANY_THROW(variables.smartptr->GetDataType());
+	//краш теста, вместо корректной обработки
+}
+
+TEST_F(AMF_Memory, getExpectedDataBufferType) {
+	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
+	ASSERT_EQ(variables.res, AMF_OK);
+	ASSERT_NE(variables.smartptr, nullptr);
+	ASSERT_EQ(variables.smartptr->GetDataType(), AMF_DATA_BUFFER);
+}
+
+TEST_F(AMF_Memory, getExpectedDataSurfaceType) {
+	variables.res = variables.context1->AllocSurface(AMF_MEMORY_DX9, AMF_SURFACE_NV12, 1024 * sizeof(float), 1024 * sizeof(float), &variables.surface);
+	ASSERT_EQ(variables.res, AMF_NOT_IMPLEMENTED);
+	/*ASSERT_NE(variables.surface, nullptr);
+	ASSERT_EQ(variables.res, AMF_OK);
+	ASSERT_EQ(variables.surface->GetDataType(), AMF_DATA_SURFACE);
+	*/
+}
+
+TEST_F(AMF_Memory, getExpectedDataAudioBufferType) {
+	variables.res = variables.context1->AllocAudioBuffer(AMF_MEMORY_HOST, AMFAF_S32, 1024 * sizeof(amf_int32), 1024, 16, &variables.aubuf);
+	ASSERT_EQ(variables.res, AMF_NOT_IMPLEMENTED);
+	/*ASSERT_NE(variables.aubuf, nullptr);
+	ASSERT_EQ(variables.res, AMF_OK);
+	ASSERT_EQ(variables.aubuf->GetDataType(), AMF_DATA_AUDIO_BUFFER);
+	*/
+}
+
+/*TEST_F(AMF_Memory, getExpectedDataUserType) {
+*
+	ASSERT_EQ(->GetDataType(), AMF_Memory_USER);
+	//баг документации - непонятно, как вообще взаимодействовать с типом AMF_Memory_USER
+}*/
+
+TEST_F(AMF_Memory, getExpectedMemoryHostType) {
+	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
+	ASSERT_EQ(variables.res, AMF_OK);
+	ASSERT_NE(variables.smartptr, nullptr);
+	ASSERT_EQ(variables.smartptr->GetMemoryType(), AMF_MEMORY_HOST);
+}
+//todo
+TEST_F(AMF_Memory, getExpectedMemoryTypeOpenCL){
+	initOpenCL();
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &variables.smartptr);
 	ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
 	ASSERT_EQ(variables.smartptr->GetMemoryType(), AMF_MEMORY_OPENCL);
 }
-
 
 
 TEST_F(AMF_Memory, memoryHostBlockDuplicate) {
@@ -129,7 +134,8 @@ TEST_F(AMF_Memory, memoryHostBlockDuplicate) {
 }
 
 
-TEST_F(AMF_Memory, DISABLED_convertMemoryHostToMemoryOpencl) {
+TEST_F(AMF_Memory, convertMemoryHostToMemoryOpenCL) {
+	initOpenCL();
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
 	ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
@@ -137,18 +143,20 @@ TEST_F(AMF_Memory, DISABLED_convertMemoryHostToMemoryOpencl) {
 	variables.res = variables.smartptr->Convert(AMF_MEMORY_OPENCL);
 	ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
-	ASSERT_NE(variables.smartptr->GetDataType(), AMF_MEMORY_OPENCL);
-}
+	ASSERT_EQ(variables.smartptr->GetDataType(), AMF_MEMORY_OPENCL);
+} //кидает amf_ok, но после конвертации тип не изменяется
 
- TEST_F(AMF_Memory, interopMemoryHostToMemoryOpencl) {
+ TEST_F(AMF_Memory, interopMemoryHostToMemoryOpenCL) {
+	initOpenCL();
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
 	ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
 	ASSERT_EQ(variables.smartptr->GetMemoryType(), AMF_MEMORY_HOST);
 	variables.res = variables.smartptr->Interop(AMF_MEMORY_OPENCL);
-	ASSERT_EQ(variables.res, AMF_OK);
+	ASSERT_EQ(variables.res, AMF_NOT_SUPPORTED);
+	/*ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
-	ASSERT_EQ(variables.smartptr->GetDataType(), AMF_MEMORY_HOST);
+	ASSERT_EQ(variables.smartptr->GetDataType(), AMF_MEMORY_HOST);*/
 }
 
 TEST_F(AMF_Memory, checkDataObjectIsReusable) {
@@ -158,7 +166,8 @@ TEST_F(AMF_Memory, checkDataObjectIsReusable) {
 	ASSERT_EQ(variables.smartptr->IsReusable(), true);
 }
 
-TEST_F(AMF_Memory, DISABLED_checkDataObjectIsNotReusable) {
+TEST_F(AMF_Memory, checkDataObjectIsNotReusable) {
+	initOpenCL();
 	AMFData* data;
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &variables.smartptr);
 	ASSERT_EQ(variables.res, AMF_OK);
@@ -166,9 +175,10 @@ TEST_F(AMF_Memory, DISABLED_checkDataObjectIsNotReusable) {
 	data = variables.smartptr;
 	ASSERT_NE(data, nullptr);
 	ASSERT_EQ(data->IsReusable(), false);
-}
+}//в целом непонятно на что сейчас кидается false
 
-TEST_F(AMF_Memory, DISABLED_checkDataObjectIsReusableOpenCL) {
+TEST_F(AMF_Memory, checkDataObjectIsReusableOpenCL) {
+	initOpenCL();
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &variables.smartptr);
 	ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
@@ -240,8 +250,7 @@ TEST_F(AMF_Memory, bufferSetSizeDontCrashWithSizeMoreThanAllocated) {
 	variables.res = variables.smartptr->SetSize(2048 * sizeof(float));
 	ASSERT_EQ(variables.res, AMF_INVALID_ARG);
 	ASSERT_NE(variables.smartptr, nullptr);
-}
-//не кидает ошибку, при setSize больше аллокации
+} //не кидает ошибку, при setSize больше аллокации
 
 TEST_F(AMF_Memory, bufferSetSizeDontCrashWithIncorrectSize) {
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
@@ -250,7 +259,7 @@ TEST_F(AMF_Memory, bufferSetSizeDontCrashWithIncorrectSize) {
 	variables.res = variables.smartptr->SetSize(-1);
 	ASSERT_EQ(variables.res, AMF_INVALID_ARG);
 	ASSERT_NE(variables.smartptr, nullptr);
-}//аналогично, не кидает ошибку при некорректном вводе
+} //не кидает ошибку при некорректном вводе
 
 TEST_F(AMF_Memory, bufferGetSizeWithCorrectSize) {
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
@@ -271,7 +280,7 @@ TEST_F(AMF_Memory, bufferGetSizeWithSizeMoreThanAllocated) {
 	ASSERT_EQ(variables.res, AMF_INVALID_ARG);
 	ASSERT_NE(variables.smartptr, nullptr);
 	ASSERT_EQ(variables.smartptr->GetSize(), 1024 * sizeof(float));
-}
+} //не кидает ошибку при некорректном вводе
 
 TEST_F(AMF_Memory, bufferGetSizeWithIncorrectSize) {
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
@@ -281,9 +290,8 @@ TEST_F(AMF_Memory, bufferGetSizeWithIncorrectSize) {
 	ASSERT_EQ(variables.res, AMF_INVALID_ARG);
 	ASSERT_NE(variables.smartptr, nullptr);
 	ASSERT_EQ(variables.smartptr->GetSize(), 1024 * sizeof(float));
-}
+} //не кидает ошибку при некорректном вводе
 
-//Get a pointer to the AMFBuffer object’s data in host memory, mapping it to host memory when necessary.
 TEST_F(AMF_Memory, bufferGetNativeWithMemoryHost) {
 	AMFBuffer* native = NULL;
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_HOST, 1024 * sizeof(float), &variables.smartptr);
@@ -292,9 +300,10 @@ TEST_F(AMF_Memory, bufferGetNativeWithMemoryHost) {
 	ASSERT_EQ(native, nullptr);
 	ASSERT_NO_THROW(native = static_cast<AMFBuffer*>(variables.smartptr->GetNative()));
 	ASSERT_NE(native, nullptr);
-}//как проверить ожидаемое значение?
+}
 
-TEST_F(AMF_Memory, DISABLED_bufferGetNativeWithNonMemoryHost) {
+TEST_F(AMF_Memory, bufferGetNativeWithNonMemoryHost) {
+	initOpenCL();
 	AMFBuffer* native = NULL;
 	variables.res = variables.context1->AllocBuffer(AMF_MEMORY_OPENCL, 1024 * sizeof(float), &variables.smartptr);
 	ASSERT_EQ(variables.res, AMF_OK);
@@ -312,7 +321,7 @@ TEST_F(AMF_Memory, DISABLED_bufferAddObserverThworsNothing) {
 	ASSERT_EQ(variables.res, AMF_OK);
 	ASSERT_NE(variables.smartptr, nullptr);
 	ASSERT_NO_THROW(variables.smartptr->AddObserver(obs));
-}
+} //непонятно, как проверять работу с обсерверами
 
 TEST_F(AMF_Memory, DISABLED_bufferRemoveObserverThworsNothing) {
 	AMFBufferObserver* obs = NULL;
@@ -321,7 +330,7 @@ TEST_F(AMF_Memory, DISABLED_bufferRemoveObserverThworsNothing) {
 	ASSERT_NE(variables.smartptr, nullptr);
 	variables.smartptr->AddObserver(obs);
 	ASSERT_NO_THROW(variables.smartptr->RemoveObserver(obs));
-}
+} //непонятно, как проверять работу с обсерверами
 
 /*TEST_F(AMF_Memory, bufferOnBufferDataRelease) {
 * }
